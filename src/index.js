@@ -1,13 +1,15 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import posts from '../routers/posts.js';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import posts from '../routers/posts.js';
+import userRouter from '../routers/userRouter.js';
+import { errorHandler, notFound } from '../middlewares/errorMiddleware.js';
 
 dotenv.config();
 
-const port = process.env.port || 3000;
+const port = process.env.port || 5000;
 const app = express()
 
 const URI = process.env.DATABASE_URL;
@@ -15,12 +17,20 @@ const URI = process.env.DATABASE_URL;
 app.use(bodyParser.json({limit: '30mb'}));
 app.use(bodyParser.urlencoded({extended: true, limit: '30mb'}));
 app.use(cors());
+app.use(express.json());
+
 
 app.get('/',(req, res) => {
   res.send('Hello world!!!')
 })
 
 app.use('/posts',posts);
+
+app.use('/api/users', userRouter);
+
+
+app.use(notFound);
+app.use(errorHandler);
 
 mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true})
 .then(() => {
