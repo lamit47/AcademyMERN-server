@@ -4,8 +4,8 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import posts from '../routers/posts.js';
-import authRouter from '../routers/authRouter.js';
 import blogRouter from '../routers/blogRouter.js';
+import userRouter from '../routers/userRouter.js';
 import categoryRouter from '../routers/categoryRouter.js';
 import { errorHandler, notFound } from '../middlewares/errorMiddleware.js';
 
@@ -28,11 +28,11 @@ app.get('/',(req, res) => {
 
 app.use('/posts',posts);
 
-app.use('/api/users', authRouter);
-
 app.use('/api/blog', blogRouter);
 
 app.use('/api/category', categoryRouter);
+
+app.use('/api/users', userRouter);
 
 
 
