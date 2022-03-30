@@ -28,11 +28,11 @@ const storage = multer.diskStorage({
     fileFilter: fileFilter
   });
 
-  const uploadPicture = upload.single('picturePath');
+  const uploadPicture = upload.single('file');
 
   const newPicture = (req, res, next) => {
     const picture = new Picture({
-      _id: new mongoose.Types.ObjectId(),    // edit req body here
+      _id: new mongoose.Types.ObjectId(),    
       picturePath: req.file.path 
     });
     picture
@@ -41,7 +41,7 @@ const storage = multer.diskStorage({
         console.log(result);
         res.status(201).json({
             id: result._id,
-            picturePath: "http://localhost:5000/" + result.picturePath
+            picturePath: "http://localhost:5000/" + result.picturePath.substring(8)
         });
       })
       .catch(err => {
