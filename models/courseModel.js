@@ -4,15 +4,15 @@ import bcrypt from 'bcryptjs';
 const courseSchema = mongoose.Schema(
     {
       lecturerId: {
-        type: Number,
+        type: String,
         required: true,
       },
       categoryId: {
-        type: Number,
+        type: String,
         required: true,
       },
       pictureId: {
-        type: Number,
+        type: String,
         required: true,
       },
       title: {
@@ -38,6 +38,7 @@ const courseSchema = mongoose.Schema(
     },
     {
       timestamps: true,
+      versionKey: false
     }
 );
 
