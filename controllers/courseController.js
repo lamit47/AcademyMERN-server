@@ -53,24 +53,9 @@ const postCourse = async (req, res) => {
 const getCourse = (req, res) => {
 
   Course.find().then(courseObj => {
-    res.status(201).json(
-      courseObj.map((value) => {
-        return {
-          id: value._id,
-          lecturerId: value.lecturerId,
-          categoryId: value.categoryId,
-          pictureId: value.pictureId,
-          title: value.title,
-          description: value.description,
-          credits: value.credits,
-          createdAt: value.createdAt,
-          updatedAt: value.updatedAt,
-          isDeleted: value.isDeleted,
-          picturePath: value.picturePath,
-          progress: value.process
-        }
-      })
-      
+    courseObj.id = courseObj._id
+    delete courseObj._id
+    res.status(201).json({...courseObj}     
     );
   }).catch(err => {
     console.log(err);
