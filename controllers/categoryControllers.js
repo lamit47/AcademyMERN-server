@@ -9,14 +9,14 @@ const getCategory = asyncHandler(async (req, res) => {
 
 //Create Category
 const createCategory = asyncHandler(async (req, res) => {
-    const { Name } = req.body;
+    const { name } = req.body;
   
-    if (!Name) {
+    if (!name) {
       res.status(400);
       throw new Error("Please Fill all the feilds");
       return;
     } else {
-      const category = new Category({Name});
+      const category = new Category({name});
   
       const createdCategory = await category.save();
   

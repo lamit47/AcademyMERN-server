@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 
-//Get Category
+//Get User
 const getUser = asyncHandler(async (req, res) => {
     const user = await User.find({user: req.user});
     res.json(user);
@@ -9,9 +9,9 @@ const getUser = asyncHandler(async (req, res) => {
 
 //Create User
 const registerUser = asyncHandler(async (req, res) => {
-    const { Email, PasswordHash, FirstName, LastName, Credits, PictureId } = req.body;
+    const { email, passwordHash, firstName, lastName, credits, pictureId, picture, scope } = req.body;
   
-    const userExists = await User.findOne({ Email });
+    const userExists = await User.findOne({ email });
   
     if (userExists) {
       res.status(404);
@@ -19,22 +19,26 @@ const registerUser = asyncHandler(async (req, res) => {
     }
   
     const user = await User.create({
-        Email,
-        PasswordHash,
-        FirstName,
-        LastName,
-        Credits,
-        PictureId
+        email,
+        passwordHash,
+        firstName,
+        lastName,
+        credits,
+        pictureId,
+        picture,
+        scope
     });
   
     if (user) {
       res.status(201).json({
         _id: user._id,
-        Email: user.Email,
-        FirstName: user.FirstName,
-        LastName: user.LastName,
-        Credits: user.Credits,
-        PictureId: user.PictureId,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        credits: user.credits,
+        pictureId: user.pictureId,
+        picture: user.picture,
+        scope: user.scope,
       });
     } else {
       res.status(400);
@@ -74,7 +78,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 //Update
 const updateUser = asyncHandler(async (req, res) => {
-    const { Email, PasswordHash, FirstName, LastName, Credits, PictureId }  = req.body;
+    const { email, firstName, lastName, pictureId }  = req.body;
   
     const user = await User.findById(req.params.id);
   
@@ -84,11 +88,10 @@ const updateUser = asyncHandler(async (req, res) => {
     // }
   
     if (user) {
-        user.Email = Email;
-        user.PasswordHash = PasswordHash;
-        user.FirstName = FirstName;
-        user.LastName = LastName;
-        user.PictureId = PictureId;
+        user.email = email;
+        user.firstName = firstName;
+        user.lastName = lastName;
+        user.pictureId = pictureId;
   
       const updatedUser = await user.save();
       res.json(updatedUser);

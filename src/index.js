@@ -3,11 +3,14 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import { errorHandler, notFound } from '../middlewares/errorMiddleware.js';
+
 import posts from '../routers/posts.js';
 import blogRouter from '../routers/blogRouter.js';
 import userRouter from '../routers/userRouter.js';
 import categoryRouter from '../routers/categoryRouter.js';
-import { errorHandler, notFound } from '../middlewares/errorMiddleware.js';
+import blogCommentRouter from '../routers/blogCommentRouter.js';
+
 
 dotenv.config();
 
@@ -33,6 +36,9 @@ app.use('/api/blog', blogRouter);
 app.use('/api/category', categoryRouter);
 
 app.use('/api/users', userRouter);
+
+app.use('/api/blogComment', blogCommentRouter);
+
 
 
 

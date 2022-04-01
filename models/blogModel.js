@@ -3,28 +3,28 @@ import mongoose from 'mongoose';
 
 const blogSchema = mongoose.Schema(
     {
-      UserId: {
+      userId: {
         type: ObjectId,
         required: true,
       },
-      CategoryId: {
+      categoryId: {
         type: ObjectId,
         required: true,
       },
-      Title: {
+      title: {
         type: String,
         required: true,
       },
-      Content: {
+      content: {
         type: String,
         required: true,
       },
-      IsDeleted: {
+      isDeleted: {
         type: Boolean,
         required: true,
       },
-      PictureId: {
-        type: ObjectId,
+      pictureId: {
+        type: Number,
         required: true,
       },
     },

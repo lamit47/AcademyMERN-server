@@ -2,11 +2,11 @@ import mongoose from 'mongoose';
 
 const categorySchema = mongoose.Schema(
     {
-      Name: {
+      name: {
         type: String,
         required: true,
       },
-      IsDeleted: {
+      isDeleted: {
         type: Boolean,
         required: false,
       }

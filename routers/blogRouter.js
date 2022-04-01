@@ -8,7 +8,7 @@ router.route("/").get(getBlog);
 router
   .route("/:id")
   .get(getBlogById)
-  .delete( deleteBlog)
+  .delete(deleteBlog)
   .put(updateBlog);
 router.route("/create").post(createBlog);
 
