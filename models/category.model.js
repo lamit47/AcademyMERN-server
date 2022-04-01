@@ -8,7 +8,8 @@ const categorySchema = mongoose.Schema(
       },
       isDeleted: {
         type: Boolean,
-        required: false,
+        required: true,
+        default: false
       }
     },
     {

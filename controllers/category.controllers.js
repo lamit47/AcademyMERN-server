@@ -4,7 +4,7 @@ import httpStatusCodes from "../utils/httpStatusCodes.js";
 
 //Get Category
 const getCategory = asyncHandler(async (req, res) => {
-  let categories = await Category.find();
+  let categories = await Category.find({ isDeleted: false });
   res.json(categories);
 });
 
@@ -49,6 +49,8 @@ const deleteCategory = asyncHandler(async (req, res) => {
   if (!category) {
     return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'Danh mục không tồn tại' });
   }
+  category.isDeleted = true;
+  await category.save();
   return res.status(httpStatusCodes.OK).json({status: 'success'});
 });
 
