@@ -9,7 +9,7 @@ const login = asyncHandler(async (req, res) => {
   let existsUser = await User.findOne({ email });
 
   if (!existsUser) {
-    return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Tài khoản này chưa được đăng ký' });
+    return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'Tài khoản này chưa được đăng ký' });
   }
 
   if (!await existsUser.matchPassword(password)) {
@@ -36,7 +36,7 @@ const refresh = asyncHandler(async (req, res) => {
   let existsUser = await User.findById(id);
 
   if (!existsUser) {
-    return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Tài khoản này không tồn tại' });
+    return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'Tài khoản này không tồn tại' });
   }
 
   let accessToken = jwt.sign({

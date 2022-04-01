@@ -20,7 +20,7 @@ const userRoles = asyncHandler(async (req, res) => {
   let id = req.params.id;
   let userRoles = await User.findById(id).select('scope');
   if (!userRoles) {
-    return res.status(httpStatusCodes.BAD_REQUEST).json('Không tìm thấy người dùng này');
+    return res.status(httpStatusCodes.NOT_FOUND).json('Không tìm thấy người dùng này');
   }
 
   return res.status(httpStatusCodes.OK).json(userRoles.scope);
@@ -31,7 +31,7 @@ const setRoles = asyncHandler(async (req, res) => {
   let id = req.params.id;
   let userRoles = await User.findById(id);
   if (!userRoles) {
-    return res.status(httpStatusCodes.BAD_REQUEST).json('Không tìm thấy người dùng này');
+    return res.status(httpStatusCodes.NOT_FOUND).json('Không tìm thấy người dùng này');
   }
 
   userRoles.scope = req.body;
@@ -44,7 +44,7 @@ const getUserById = asyncHandler(async (req, res) => {
   let id = req.params.id;
   let user = await User.findById(id).select('-passwordHash');
   if (!user) {
-    return res.status(httpStatusCodes.BAD_REQUEST).json('Không tìm thấy người dùng này');
+    return res.status(httpStatusCodes.NOT_FOUND).json('Không tìm thấy người dùng này');
   }
 
   return res.status(httpStatusCodes.OK).json(user);
@@ -53,9 +53,13 @@ const getUserById = asyncHandler(async (req, res) => {
 const adminUpdateInfo = asyncHandler(async (req, res) => {
   let id = req.params.id;
   let { email, firstName, lastName } = req.body;
+  if (!email || !firstName || !lastName) {
+    return res.status(httpStatusCodes.BAD_REQUEST).json('Vui lòng nhập đầy đủ thông tin');
+  }
+
   let user = await User.findById(id);
   if (!user) {
-    return res.status(httpStatusCodes.BAD_REQUEST).json('Không tìm thấy người dùng này');
+    return res.status(httpStatusCodes.NOT_FOUND).json('Không tìm thấy người dùng này');
   }
 
   user.email = email;
@@ -69,10 +73,15 @@ const adminUpdateInfo = asyncHandler(async (req, res) => {
 const adminUpdatePass = asyncHandler(async (req, res) => {
   let id = req.params.id;
   let { password } = req.body;
+
+  if (!password) {
+    return res.status(httpStatusCodes.BAD_REQUEST).json('Vui lòng nhập mật khẩu');
+  }
+
   let user = await User.findById(id);
 
   if (!user) {
-    return res.status(httpStatusCodes.BAD_REQUEST).json('Không tìm thấy người dùng này');
+    return res.status(httpStatusCodes.NOT_FOUND).json('Không tìm thấy người dùng này');
   }
 
   user.passwordHash = password;
@@ -83,6 +92,9 @@ const adminUpdatePass = asyncHandler(async (req, res) => {
 //Create User
 const registerUser = asyncHandler(async (req, res) => {
   let { email, password, firstName, lastName } = req.body;
+  if (!email || !password || !firstName || !lastName) {
+    return res.status(httpStatusCodes.BAD_REQUEST).json('Vui lòng nhập đầy đủ thông tin');
+  }
 
   let existsUser = await User.findOne({ email });
 
@@ -104,7 +116,7 @@ const getLoginUser = asyncHandler(async (req, res) => {
   let userInfo = await User.findById(user.id).select('-passwordHash');
 
   if (!userInfo) {
-    return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Tài khoản này chưa đăng ký' });
+    return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'Tài khoản này chưa đăng ký' });
   }
   return res.status(httpStatusCodes.OK).json(userInfo);
 });
@@ -113,10 +125,13 @@ const getLoginUser = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res) => {
   let { email, firstName, lastName } = req.body;
   let user = req.user;
+  if (!email || !firstName || !lastName) {
+    return res.status(httpStatusCodes.BAD_REQUEST).json('Vui lòng nhập đầy đủ thông tin');
+  }
 
   let userP = await User.findById(user.id);
   if (!userP) {
-    return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Vui lòng đăng nhập' });
+    return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'Tài khoản này không tồn tại' });
   }
   userP.email = email;
   userP.firstName = firstName;
@@ -132,10 +147,13 @@ const updateUser = asyncHandler(async (req, res) => {
 const changePassword = asyncHandler(async (req, res) => {
   let { oldPassword, newPassword } = req.body;
   let user = req.user;
+  if (!oldPassword || !newPassword) {
+    return res.status(httpStatusCodes.BAD_REQUEST).json('Vui lòng nhập đầy đủ thông tin');
+  }
 
   let userP = await User.findById(user.id);
   if (!userP) {
-    return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Vui lòng đăng nhập' });
+    return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'Tài khoản này không tồn tại' });
   }
   if (!await userP.matchPassword(oldPassword)) {
     return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Mật khẩu cũ không đúng' });
