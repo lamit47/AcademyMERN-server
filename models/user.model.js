@@ -45,6 +45,20 @@ userSchema.pre("save", async function (next) {
   this.passwordHash = await bcrypt.hash(this.passwordHash, salt);
 });
 
+// Duplicate the ID field.
+userSchema.virtual('id').get(function () {
+  return this._id.toHexString();
+});
+
+// Ensure virtual fields are serialised.
+userSchema.set('toJSON', {
+  virtuals: true,
+  versionKey:false,
+  transform: function (doc, ret) {
+    delete ret._id
+  }
+});
+
 const User = mongoose.model("User", userSchema);
 
 export default User;

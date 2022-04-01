@@ -2,11 +2,83 @@ import asyncHandler from "express-async-handler";
 import httpStatusCodes from "../utils/httpStatusCodes.js";
 import User from "../models/user.model.js";
 
-// //Get Category
-// const getUser = asyncHandler(async (req, res) => {
-//     const user = await User.find({user: req.user});
-//     res.json(user);
-// });
+//Get all user
+const getAllUsers = asyncHandler(async (req, res) => {
+    let users = await User.find().select('-passwordHash');
+    return res.status(httpStatusCodes.OK).json(users);
+});
+
+//Get list roles
+const roles = asyncHandler(async (req, res) => {
+  let roles = ['Administrators', 'Moderators', 'Lecturers', 'Students', 'Banned'];
+
+  return res.status(httpStatusCodes.OK).json(roles);
+});
+
+//Get role of user
+const userRoles = asyncHandler(async (req, res) => {
+  let id = req.params.id;
+  let userRoles = await User.findById(id).select('scope');
+  if (!userRoles) {
+    return res.status(httpStatusCodes.BAD_REQUEST).json('Không tìm thấy người dùng này');
+  }
+
+  return res.status(httpStatusCodes.OK).json(userRoles.scope);
+});
+
+//Set role for user
+const setRoles = asyncHandler(async (req, res) => {
+  let id = req.params.id;
+  let userRoles = await User.findById(id);
+  if (!userRoles) {
+    return res.status(httpStatusCodes.BAD_REQUEST).json('Không tìm thấy người dùng này');
+  }
+
+  userRoles.scope = req.body;
+  userRoles = userRoles.save()
+  return res.status(httpStatusCodes.OK).json(userRoles.scope);
+});
+
+//Get user by id
+const getUserById = asyncHandler(async (req, res) => {
+  let id = req.params.id;
+  let user = await User.findById(id).select('-passwordHash');
+  if (!user) {
+    return res.status(httpStatusCodes.BAD_REQUEST).json('Không tìm thấy người dùng này');
+  }
+
+  return res.status(httpStatusCodes.OK).json(user);
+});
+
+const adminUpdateInfo = asyncHandler(async (req, res) => {
+  let id = req.params.id;
+  let { email, firstName, lastName } = req.body;
+  let user = await User.findById(id);
+  if (!user) {
+    return res.status(httpStatusCodes.BAD_REQUEST).json('Không tìm thấy người dùng này');
+  }
+
+  user.email = email;
+  user.firstName = firstName;
+  user.lastName = lastName;
+  user = user.save();
+  user.passwordHash = undefined;
+  return res.status(httpStatusCodes.OK).json(user);
+});
+
+const adminUpdatePass = asyncHandler(async (req, res) => {
+  let id = req.params.id;
+  let { password } = req.body;
+  let user = await User.findById(id);
+
+  if (!user) {
+    return res.status(httpStatusCodes.BAD_REQUEST).json('Không tìm thấy người dùng này');
+  }
+
+  user.passwordHash = password;
+  user = user.save();
+  return res.status(httpStatusCodes.OK).json({ status: 'success' });
+});
 
 //Create User
 const registerUser = asyncHandler(async (req, res) => {
@@ -25,10 +97,11 @@ const registerUser = asyncHandler(async (req, res) => {
   return res.status(httpStatusCodes.OK).json(newUser);
 });
 
-//Get User by Id
-const getUserById = asyncHandler(async (req, res) => {
+//Get login user
+const getLoginUser = asyncHandler(async (req, res) => {
   let user = req.user;
-  let userInfo = await User.findById(user._id).select('-passwordHash');
+
+  let userInfo = await User.findById(user.id).select('-passwordHash');
 
   if (!userInfo) {
     return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Tài khoản này chưa đăng ký' });
@@ -41,7 +114,7 @@ const updateUser = asyncHandler(async (req, res) => {
   let { email, firstName, lastName } = req.body;
   let user = req.user;
 
-  let userP = await User.findById(user._id);
+  let userP = await User.findById(user.id);
   if (!userP) {
     return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Vui lòng đăng nhập' });
   }
@@ -60,7 +133,7 @@ const changePassword = asyncHandler(async (req, res) => {
   let { oldPassword, newPassword } = req.body;
   let user = req.user;
 
-  let userP = await User.findById(user._id);
+  let userP = await User.findById(user.id);
   if (!userP) {
     return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Vui lòng đăng nhập' });
   }
@@ -78,7 +151,14 @@ const changePassword = asyncHandler(async (req, res) => {
 
 export {
   registerUser,
-  getUserById,
+  getLoginUser,
   updateUser,
-  changePassword
+  changePassword,
+  getAllUsers,
+  roles,
+  userRoles,
+  getUserById,
+  setRoles,
+  adminUpdateInfo,
+  adminUpdatePass
 }

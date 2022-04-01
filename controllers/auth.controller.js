@@ -16,6 +16,7 @@ const login = asyncHandler(async (req, res) => {
     return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Mật khẩu không đúng' });
   }
   
+  existsUser.passwordHash = undefined;
   let accessToken = jwt.sign({
     exp: Math.floor(Date.now() / 1000) + (60 * 60),
     data: existsUser
