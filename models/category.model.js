@@ -2,11 +2,11 @@ import mongoose from 'mongoose';
 
 const categorySchema = mongoose.Schema(
     {
-      Name: {
+      name: {
         type: String,
         required: true,
       },
-      IsDeleted: {
+      isDeleted: {
         type: Boolean,
         required: false,
       }
@@ -16,6 +16,19 @@ const categorySchema = mongoose.Schema(
     }
 );
 
+// Duplicate the ID field.
+categorySchema.virtual('id').get(function () {
+  return this._id.toHexString();
+});
+
+// Ensure virtual fields are serialised.
+categorySchema.set('toJSON', {
+  virtuals: true,
+  versionKey:false,
+  transform: function (doc, ret) {
+    delete ret._id
+  }
+});
 
 const Category = mongoose.model("Category", categorySchema);
 

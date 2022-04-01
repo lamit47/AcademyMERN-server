@@ -7,7 +7,7 @@ import posts from '../routers/posts.js';
 import blogRouter from '../routers/blogRouter.js';
 import userRouter from '../routers/user.route.js';
 import authRouter from '../routers/auth.router.js';
-import categoryRouter from '../routers/categoryRouter.js';
+import categoryRouter from '../routers/category.router.js';
 import examRouter from '../routers/exam.router.js';
 import { errorHandler, notFound } from '../middlewares/errorMiddleware.js';
 
