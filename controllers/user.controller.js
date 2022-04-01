@@ -36,6 +36,26 @@ const getUserById = asyncHandler(async (req, res) => {
   return res.status(httpStatusCodes.OK).json(userInfo);
 });
 
+//Update
+const updateUser = asyncHandler(async (req, res) => {
+  let { email, firstName, lastName } = req.body;
+  let user = req.user;
+
+  let userP = await User.findById(user._id);
+  if (!userP) {
+    res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Vui lòng đăng nhập' });
+    throw new Error("User not found");
+  }
+  userP.email = email;
+  userP.firstName = firstName;
+  userP.lastName = lastName;
+  userP = await userP.save();
+
+  userP.passwordHash = undefined;
+
+  return res.status(httpStatusCodes.OK).json(userP);
+});
+
 // //Delete user
 // const deleteUser = asyncHandler(async (req, res) => {
 //   const user = await User.findById(req.params.id);
@@ -54,32 +74,9 @@ const getUserById = asyncHandler(async (req, res) => {
 //   }
 // });
 
-// //Update
-// const updateUser = asyncHandler(async (req, res) => {
-//   const { Email, PasswordHash, FirstName, LastName, Credits, PictureId } = req.body;
 
-//   const user = await User.findById(req.params.id);
-
-//   // if (note.user.toString() !== req.user._id.toString()) {
-//   //   res.status(401);
-//   //   throw new Error("You can't perform this action");
-//   // }
-
-//   if (user) {
-//     user.Email = Email;
-//     user.PasswordHash = PasswordHash;
-//     user.FirstName = FirstName;
-//     user.LastName = LastName;
-//     user.PictureId = PictureId;
-
-//     const updatedUser = await user.save();
-//     res.json(updatedUser);
-//   } else {
-//     res.status(404);
-//     throw new Error("User not found");
-//   }
-// });
 export { 
   registerUser,
-  getUserById
+  getUserById,
+  updateUser
 }
