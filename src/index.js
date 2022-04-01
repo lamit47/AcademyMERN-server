@@ -34,8 +34,6 @@ app.use('/api/blog', blogRouter);
 
 app.use('/api/category', categoryRouter);
 
-// app.use('/api/users', userRouter);
-
 
 app.use('/api/exam', examRouter);
 app.use('/api/user', userRouter);
