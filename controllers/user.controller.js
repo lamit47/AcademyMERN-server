@@ -35,7 +35,7 @@ const setRoles = asyncHandler(async (req, res) => {
   }
 
   userRoles.scope = req.body;
-  userRoles = userRoles.save()
+  userRoles = await userRoles.save()
   return res.status(httpStatusCodes.OK).json(userRoles.scope);
 });
 
@@ -65,7 +65,7 @@ const adminUpdateInfo = asyncHandler(async (req, res) => {
   user.email = email;
   user.firstName = firstName;
   user.lastName = lastName;
-  user = user.save();
+  user = await user.save();
   user.passwordHash = undefined;
   return res.status(httpStatusCodes.OK).json(user);
 });
@@ -85,7 +85,7 @@ const adminUpdatePass = asyncHandler(async (req, res) => {
   }
 
   user.passwordHash = password;
-  user = user.save();
+  user = await user.save();
   return res.status(httpStatusCodes.OK).json({ status: 'success' });
 });
 
