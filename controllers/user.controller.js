@@ -14,11 +14,13 @@ const registerUser = asyncHandler(async (req, res) => {
 
   let existsUser = await User.findOne({ email });
 
+  let roles = ['Students'];
+
   if (existsUser) {
     return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Tài khoản này đã tồn tại' });
   }
 
-  let newUser = await User.create({ email: email, passwordHash: password, firstName: firstName, lastName: lastName, picture: "/"});
+  let newUser = await User.create({ email: email, passwordHash: password, firstName: firstName, lastName: lastName, picture: "/", scope: roles});
   newUser.passwordHash = undefined;
   return res.status(httpStatusCodes.OK).json(newUser);
 });
