@@ -12,7 +12,7 @@ const login = asyncHandler(async (req, res) => {
     return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Tài khoản này chưa được đăng ký' });
   }
 
-  if (!existsUser.matchPassword(password)) {
+  if (!await existsUser.matchPassword(password)) {
     return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Mật khẩu không đúng' });
   }
   

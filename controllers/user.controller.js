@@ -20,7 +20,7 @@ const registerUser = asyncHandler(async (req, res) => {
     return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Tài khoản này đã tồn tại' });
   }
 
-  let newUser = await User.create({ email: email, passwordHash: password, firstName: firstName, lastName: lastName, picture: "/", scope: roles});
+  let newUser = await User.create({ email: email, passwordHash: password, firstName: firstName, lastName: lastName, picture: "/", scope: roles });
   newUser.passwordHash = undefined;
   return res.status(httpStatusCodes.OK).json(newUser);
 });
@@ -43,8 +43,7 @@ const updateUser = asyncHandler(async (req, res) => {
 
   let userP = await User.findById(user._id);
   if (!userP) {
-    res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Vui lòng đăng nhập' });
-    throw new Error("User not found");
+    return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Vui lòng đăng nhập' });
   }
   userP.email = email;
   userP.firstName = firstName;
@@ -56,27 +55,30 @@ const updateUser = asyncHandler(async (req, res) => {
   return res.status(httpStatusCodes.OK).json(userP);
 });
 
-// //Delete user
-// const deleteUser = asyncHandler(async (req, res) => {
-//   const user = await User.findById(req.params.id);
+//Update
+const changePassword = asyncHandler(async (req, res) => {
+  let { oldPassword, newPassword } = req.body;
+  let user = req.user;
 
-//   // if (note.user.toString() !== req.user._id.toString()) {
-//   //   res.status(401);
-//   //   throw new Error("You can't perform this action");
-//   // }
+  let userP = await User.findById(user._id);
+  if (!userP) {
+    return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Vui lòng đăng nhập' });
+  }
+  if (!await userP.matchPassword(oldPassword)) {
+    return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Mật khẩu cũ không đúng' });
+  }
+  userP.passwordHash = newPassword;
+  userP = await userP.save();
 
-//   if (user) {
-//     await user.remove();
-//     res.json({ message: "Removed Success!!!" });
-//   } else {
-//     res.status(404);
-//     throw new Error("User not Found");
-//   }
-// });
+  userP.passwordHash = undefined;
+
+  return res.status(httpStatusCodes.OK).json({ status: 'success' });
+});
 
 
-export { 
+export {
   registerUser,
   getUserById,
-  updateUser
+  updateUser,
+  changePassword
 }
