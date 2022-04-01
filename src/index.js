@@ -5,8 +5,10 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import posts from '../routers/posts.js';
 import blogRouter from '../routers/blogRouter.js';
-import userRouter from '../routers/userRouter.js';
+import userRouter from '../routers/user.route.js';
+import authRouter from '../routers/auth.router.js';
 import categoryRouter from '../routers/categoryRouter.js';
+import examRouter from '../routers/exam.router.js';
 import { errorHandler, notFound } from '../middlewares/errorMiddleware.js';
 
 dotenv.config();
@@ -18,7 +20,7 @@ const URI = process.env.DATABASE_URL;
 
 app.use(bodyParser.json({limit: '30mb'}));
 app.use(bodyParser.urlencoded({extended: true, limit: '30mb'}));
-app.use(cors());
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(express.json());
 
 
@@ -32,7 +34,12 @@ app.use('/api/blog', blogRouter);
 
 app.use('/api/category', categoryRouter);
 
-app.use('/api/users', userRouter);
+// app.use('/api/users', userRouter);
+
+
+app.use('/api/exam', examRouter);
+app.use('/api/user', userRouter);
+app.use('/api/auth', authRouter);
 
 
 
