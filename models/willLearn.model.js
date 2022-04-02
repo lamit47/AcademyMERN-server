@@ -17,6 +17,19 @@ const willLearnSchema = mongoose.Schema(
     }
 );
 
+// Duplicate the ID field.
+willLearnSchema.virtual('id').get(function () {
+  return this._id.toHexString();
+});
+
+// Ensure virtual fields are serialised.
+willLearnSchema.set('toJSON', {
+  virtuals: true,
+  versionKey:false,
+  transform: function (doc, ret) {
+    delete ret._id
+  }
+});
 
 const WillLearn = mongoose.model("WillLearn", willLearnSchema);
 

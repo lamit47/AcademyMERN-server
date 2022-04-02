@@ -1,24 +1,15 @@
 import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
 
-const examSchema = mongoose.Schema(
+const requirementSchema = mongoose.Schema(
     {
       courseId: {
         type: ObjectId,
         required: true,
       },
-      title: {
+      content: {
         type: String,
         required: true,
-      },
-      examDuration: {
-        type: Number,
-        required: true,
-      },
-      isDeleted: {
-        type: Boolean,
-        required: true,
-        default: false
       }
     },
     {
@@ -27,12 +18,12 @@ const examSchema = mongoose.Schema(
 );
 
 // Duplicate the ID field.
-examSchema.virtual('id').get(function () {
+requirementSchema.virtual('id').get(function () {
   return this._id.toHexString();
 });
 
 // Ensure virtual fields are serialised.
-examSchema.set('toJSON', {
+requirementSchema.set('toJSON', {
   virtuals: true,
   versionKey:false,
   transform: function (doc, ret) {
@@ -40,6 +31,6 @@ examSchema.set('toJSON', {
   }
 });
 
-const Exam = mongoose.model("Exam", examSchema);
+const Requirement = mongoose.model("Requirement", requirementSchema);
 
-export default Exam;
+export default Requirement;

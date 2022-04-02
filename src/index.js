@@ -17,10 +17,8 @@ import blogCommentRouter from '../routers/blogComment.router.js';
 import pictureRouter from '../routers/pictureRouter.js'
 import courseRouter from '../routers/courseRouter.js'
 
-import willLearnRouter from '../routers/willLearnRouter.js';
-import pictureRouter from '../routers/pictureRouter.js';
-import courseRouter from '../routers/courseRouter.js';
-import requirementRouter from '../routers/requirementRouter.js';
+import willLearnRouter from '../routers/willLearn.router.js';
+import requirementRouter from '../routers/requirement.router.js';
 
 
 dotenv.config();
@@ -30,7 +28,7 @@ const app = express()
 
 const URI = process.env.DATABASE_URL;
 
-app.use(express.static('uploads'));
+app.use('/uploads', express.static('uploads'));
 
 app.use(bodyParser.json({limit: '30mb'}));
 app.use(bodyParser.urlencoded({extended: true, limit: '30mb'}));

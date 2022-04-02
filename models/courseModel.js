@@ -21,15 +21,8 @@ const courseSchema = mongoose.Schema(
       description: {
         type: String,
       },
-      credits: {
-        type: Number,
-        required: true,
-      },
       isDeleted: {
         type: Boolean,
-      },
-      picturePath: {
-        type: String,
       },
       progress: {
         type: Number,
@@ -40,6 +33,19 @@ const courseSchema = mongoose.Schema(
       versionKey: false
     }
 );
+
+courseSchema.virtual('id').get(function () {
+  return this._id.toHexString();
+});
+
+// Ensure virtual fields are serialised.
+courseSchema.set('toJSON', {
+  virtuals: true,
+  versionKey:false,
+  transform: function (doc, ret) {
+    delete ret._id
+  }
+});
   
 const Course = mongoose.model("Course", courseSchema);
 

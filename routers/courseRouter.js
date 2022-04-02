@@ -1,6 +1,16 @@
 import express from 'express';
 import { verifyToken } from '../middlewares/auth.middleware.js';
-import { postCourse, getCourse, getCourseById, putCourseById, deleteCourseById, postRegisterCourse, getRegistedUsers, getWillLearns } from '../controllers/courseController.js';
+import { 
+    postCourse, 
+    getCourse, 
+    getCourseById, 
+    putCourseById, 
+    deleteCourseById, 
+    postRegisterCourse, 
+    getRegistedUsers, 
+    getWillLearns, 
+    getRequirements 
+} from '../controllers/courseController.js';
 
 const router = express.Router();
 
@@ -19,5 +29,6 @@ router.post('/:id/Register', verifyToken, postRegisterCourse);
 router.get('/:id/IsRegisted', verifyToken, getRegistedUsers);
 
 router.get('/:id/WillLearns', getWillLearns);
+router.get('/:id/Requirements', getRequirements);
 
 export default router;
