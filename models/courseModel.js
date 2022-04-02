@@ -40,7 +40,6 @@ const courseSchema = mongoose.Schema(
       versionKey: false
     }
 );
-
   
 const Course = mongoose.model("Course", courseSchema);
 

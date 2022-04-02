@@ -14,6 +14,9 @@ import answerRouter from '../routers/answer.router.js';
 import blogRouter from '../routers/blog.router.js';
 import blogCommentRouter from '../routers/blogComment.router.js';
 
+import pictureRouter from '../routers/pictureRouter.js'
+import courseRouter from '../routers/courseRouter.js'
+
 import willLearnRouter from '../routers/willLearnRouter.js';
 import pictureRouter from '../routers/pictureRouter.js';
 import courseRouter from '../routers/courseRouter.js';
@@ -26,6 +29,8 @@ const port = process.env.port || 5000;
 const app = express()
 
 const URI = process.env.DATABASE_URL;
+
+app.use(express.static('uploads'));
 
 app.use(bodyParser.json({limit: '30mb'}));
 app.use(bodyParser.urlencoded({extended: true, limit: '30mb'}));
@@ -60,6 +65,9 @@ app.use('/api/question' , questionRouter);
 
 app.use('/api/answer' , answerRouter);
 
+app.use('/api/Picture/Upload' , pictureRouter);
+
+app.use('/api/Course' , courseRouter);
 
 app.use(notFound);
 app.use(errorHandler);
@@ -73,3 +81,14 @@ mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true})
 }).catch((err) => {
   console.log('err',err);
 });
+
+
+
+
+
+
+
+
+
+
+
