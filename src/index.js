@@ -12,7 +12,7 @@ import examRouter from '../routers/exam.router.js';
 import questionRouter from '../routers/question.router.js';
 import answerRouter from '../routers/answer.router.js';
 
-import blogRouter from '../routers/blogRouter.js';
+import blogRouter from '../routers/blog.router.js';
 import blogCommentRouter from '../routers/blogCommentRouter.js';
 import willLearnRouter from '../routers/willLearnRouter.js';
 import pictureRouter from '../routers/pictureRouter.js';

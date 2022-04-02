@@ -1,6 +1,5 @@
 import Picture from "../models/pictureModel.js";
 import multer from "multer";
-import mongoose from 'mongoose';
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {

@@ -22,10 +22,16 @@ const blogSchema = mongoose.Schema(
       isDeleted: {
         type: Boolean,
         required: true,
+        default: false
       },
       pictureId: {
-        type: Number,
+        type: ObjectId,
+        required: false,
+      },
+      picturePath: {
+        type: String,
         required: true,
+        default: '/'
       },
     },
     {
@@ -33,6 +39,20 @@ const blogSchema = mongoose.Schema(
     }
 );
 
+
+// Duplicate the ID field.
+blogSchema.virtual('id').get(function () {
+  return this._id.toHexString();
+});
+
+// Ensure virtual fields are serialised.
+blogSchema.set('toJSON', {
+  virtuals: true,
+  versionKey:false,
+  transform: function (doc, ret) {
+    delete ret._id
+  }
+});
 
 const Blog = mongoose.model("Blog", blogSchema);
 

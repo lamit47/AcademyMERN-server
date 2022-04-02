@@ -59,6 +59,15 @@ userSchema.set('toJSON', {
   }
 });
 
+// Ensure virtual fields are serialised.
+userSchema.set('toObject', {
+  virtuals: true,
+  versionKey:false,
+  transform: function (doc, ret) {
+    delete ret._id
+  }
+});
+
 const User = mongoose.model("User", userSchema);
 
 export default User;

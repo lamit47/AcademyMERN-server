@@ -39,7 +39,7 @@ const createQuestion = asyncHandler(async (req, res) => {
 
 const deleteQuestion = asyncHandler(async (req, res) => {
   let id = req.params.id;
-  let qs = await Blog.findById(id);
+  let qs = await Question.findById(id);
 
   if (!qs) {
     return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'Không tìm thấy câu hỏi này' });
