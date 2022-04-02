@@ -34,9 +34,9 @@ app.use('/posts',posts);
 app.use('/api/users', userRouter);
 
 //app.use('/api/Picture/Upload' , pictureRouter);
-app.use('/api/picture/upload' , pictureRouter);
+app.use('/api/Picture/Upload' , pictureRouter);
 
-app.use('/api/course' , courseRouter);
+app.use('/api/Course' , courseRouter);
 
 app.use(notFound);
 app.use(errorHandler);

@@ -33,7 +33,7 @@ const storage = multer.diskStorage({
   const newPicture = (req, res, next) => {
     const picture = new Picture({
       //_id: new mongoose.Types.ObjectId(),    
-      picturePath: "http://localhost:5000/" + req.file.path.substring(8) 
+      picturePath: req.file.path.substring(8) 
     });
     picture
       .save()
