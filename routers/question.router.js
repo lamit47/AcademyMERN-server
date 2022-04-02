@@ -1,5 +1,12 @@
 import express from 'express';
-import { createQuestion, deleteQuestion, getQuestions, getQuestionById, updateQuestion } from '../controllers/questionControllers.js';
+import { 
+  createQuestion, 
+  deleteQuestion, 
+  getQuestions, 
+  getQuestionById, 
+  updateQuestion, 
+  getComments 
+} from '../controllers/question.controllers.js';
 import { verifyToken } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
@@ -12,6 +19,7 @@ router
   .put(updateQuestion);
   
 router.route("/").get(getQuestions);
+router.route("/:id/comments").get(getComments);
 router.route("/").post(verifyToken, createQuestion);
 
 export default router;

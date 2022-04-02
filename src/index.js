@@ -9,6 +9,8 @@ import userRouter from '../routers/user.route.js';
 import authRouter from '../routers/auth.router.js';
 import categoryRouter from '../routers/category.router.js';
 import examRouter from '../routers/exam.router.js';
+import questionRouter from '../routers/question.router.js';
+import answerRouter from '../routers/answer.router.js';
 
 import blogRouter from '../routers/blogRouter.js';
 import blogCommentRouter from '../routers/blogCommentRouter.js';
@@ -16,8 +18,6 @@ import willLearnRouter from '../routers/willLearnRouter.js';
 import pictureRouter from '../routers/pictureRouter.js';
 import courseRouter from '../routers/courseRouter.js';
 import requirementRouter from '../routers/requirementRouter.js';
-import questionRouter from '../routers/questionRouter.js';
-import answerRouter from '../routers/answerRouter.js';
 
 
 dotenv.config();

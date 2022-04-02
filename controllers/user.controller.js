@@ -167,7 +167,7 @@ const changePassword = asyncHandler(async (req, res) => {
 });
 
 const publicUser = asyncHandler(async (req, res) => {
-  let id = req.params.userId;
+  let id = req.params.id;
   let user = await User.findById(id).select('-passwordHash');
 
   if (!user) {

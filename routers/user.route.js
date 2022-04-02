@@ -11,7 +11,8 @@ import {
   userRoles,
   setRoles,
   adminUpdateInfo,
-  adminUpdatePass
+  adminUpdatePass,
+  publicUser
 } from '../controllers/user.controller.js';
 
 const router = express.Router();
@@ -24,6 +25,7 @@ router.route("/password").post(verifyToken, changePassword);
 
 router.route("/").get(getAllUsers);
 router.route("/roles").get(roles);
+router.route("/public/:id").get(publicUser);
 router.route("/:id").get(getUserById);
 router.route("/:id").put(adminUpdateInfo);
 router.route("/:id/roles").get(userRoles);
