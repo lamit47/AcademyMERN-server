@@ -1,5 +1,5 @@
 import Course from "../models/courseModel.js";
-import Picture from "../models/pictureModel.js";
+import Picture from "../models/picture.model.js";
 import Attendance from "../models/attendanceModel.js"
 import asyncHandler from "express-async-handler";
 import WillLearn from "../models/willLearn.model.js";
