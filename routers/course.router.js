@@ -10,7 +10,7 @@ import {
     getRegistedUsers, 
     getWillLearns, 
     getRequirements 
-} from '../controllers/courseController.js';
+} from '../controllers/course.controller.js';
 
 const router = express.Router();
 

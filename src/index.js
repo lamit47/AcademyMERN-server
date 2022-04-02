@@ -14,9 +14,8 @@ import answerRouter from '../routers/answer.router.js';
 import blogRouter from '../routers/blog.router.js';
 import blogCommentRouter from '../routers/blogComment.router.js';
 
-import pictureRouter from '../routers/pictureRouter.js'
-import courseRouter from '../routers/courseRouter.js'
-
+import pictureRouter from '../routers/picture.router.js'
+import courseRouter from '../routers/course.router.js'
 import willLearnRouter from '../routers/willLearn.router.js';
 import requirementRouter from '../routers/requirement.router.js';
 
