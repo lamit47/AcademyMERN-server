@@ -33,15 +33,20 @@ const postCourse = asyncHandler(async (req, res) => {
 })
 
 // get all course
-const getCourse = asyncHandler((req, res) => {
-  Course.find().then(courseArr => {
-    res.status(200).json([...courseArr.map(course => course)]);
-  }).catch(err => {
-    console.log(err);
-    res.status(500).json({
-      error: err()
-    });
-  });
+const getCourses = asyncHandler(async (req, res) => {
+  const hostname = process.env.HOSTNAME;
+  let { skip, take } = req.query;
+  let list = await Course.find({ isDeleted: false }).limit(take).skip(skip).sort('-updatedAt');
+  let courses = [];
+  if (take < 50) {
+    for (let item of list) {
+      let course = item.toObject();
+      let picture = await Picture.findById(course.pictureId);
+      course.picturePath = hostname + picture.picturePath;
+      courses.push(course);
+    }
+  }
+  return res.status(httpStatusCodes.OK).send(courses);
 })
 
 // get by id
@@ -154,5 +159,5 @@ const getRequirements = asyncHandler(async (req, res) => {
 })
 
 export {
-  postCourse, getCourse, getCourseById, putCourseById, deleteCourseById, postRegisterCourse, getRegistedUsers, getWillLearns, getRequirements
+  postCourse, getCourses, getCourseById, putCourseById, deleteCourseById, postRegisterCourse, getRegistedUsers, getWillLearns, getRequirements
 }

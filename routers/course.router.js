@@ -2,7 +2,7 @@ import express from 'express';
 import { verifyToken } from '../middlewares/auth.middleware.js';
 import { 
     postCourse, 
-    getCourse, 
+    getCourses, 
     getCourseById, 
     putCourseById, 
     deleteCourseById, 
@@ -17,7 +17,7 @@ const router = express.Router();
 //router.route("/").post(postCourse);
 router.route('/')
     .post(postCourse)
-    .get(getCourse);
+    .get(getCourses);
 
 router.route('/:id')
     .get(getCourseById)

@@ -23,6 +23,8 @@ const courseSchema = mongoose.Schema(
       },
       isDeleted: {
         type: Boolean,
+        required: true,
+        default: false
       },
       progress: {
         type: Number,
@@ -41,7 +43,13 @@ courseSchema.virtual('id').get(function () {
 // Ensure virtual fields are serialised.
 courseSchema.set('toJSON', {
   virtuals: true,
-  versionKey:false,
+  transform: function (doc, ret) {
+    delete ret._id
+  }
+});
+
+courseSchema.set('toObject', {
+  virtuals: true,
   transform: function (doc, ret) {
     delete ret._id
   }
