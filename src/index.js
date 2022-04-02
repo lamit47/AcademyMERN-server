@@ -11,9 +11,9 @@ import categoryRouter from '../routers/category.router.js';
 import examRouter from '../routers/exam.router.js';
 import questionRouter from '../routers/question.router.js';
 import answerRouter from '../routers/answer.router.js';
-
 import blogRouter from '../routers/blog.router.js';
-import blogCommentRouter from '../routers/blogCommentRouter.js';
+import blogCommentRouter from '../routers/blogComment.router.js';
+
 import willLearnRouter from '../routers/willLearnRouter.js';
 import pictureRouter from '../routers/pictureRouter.js';
 import courseRouter from '../routers/courseRouter.js';
@@ -59,11 +59,6 @@ app.use('/api/requirement' , requirementRouter);
 app.use('/api/question' , questionRouter);
 
 app.use('/api/answer' , answerRouter);
-
-
-
-
-
 
 
 app.use(notFound);
