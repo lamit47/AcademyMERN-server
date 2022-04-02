@@ -166,6 +166,17 @@ const changePassword = asyncHandler(async (req, res) => {
   return res.status(httpStatusCodes.OK).json({ status: 'success' });
 });
 
+const publicUser = asyncHandler(async (req, res) => {
+  let id = req.params.userId;
+  let user = await User.findById(id).select('-passwordHash');
+
+  if (!user) {
+    return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'Tài khoản này không tồn tại' });
+  }
+
+  return res.status(httpStatusCodes.OK).json(user);
+});
+
 
 export {
   registerUser,
@@ -178,5 +189,6 @@ export {
   getUserById,
   setRoles,
   adminUpdateInfo,
-  adminUpdatePass
+  adminUpdatePass,
+  publicUser
 }

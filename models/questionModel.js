@@ -1,34 +1,33 @@
+import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
 
 const questionSchema = mongoose.Schema(
-  {
-    examId: {
-      type: Object,
-      require: true
-    },
-    content: {
-      type: String,
-      require: true
-    },
-    options: [{
+    {
+      userId: {
+        type: ObjectId,
+        required: true,
+      },
+      categoryId: {
+        type: ObjectId,
+        required: true,
+      },
+      title: {
+        type: String,
+        required: true,
+      },
       content: {
         type: String,
-        require: true
+        required: true,
+      },
+      isDeleted: {
+        type: Boolean,
+        required: true,
+        default: false
       }
-    }],
-    rightOption: {
-      type: Number,
-      require: true
     },
-    isDeleted: {
-      type: Boolean,
-      require: false,
-      default: false
+    {
+      timestamps: true,
     }
-  },
-  {
-    timestamps: true
-  }
 );
 
 // Duplicate the ID field.
@@ -44,7 +43,6 @@ questionSchema.set('toJSON', {
     delete ret._id
   }
 });
-
 
 const Question = mongoose.model("Question", questionSchema);
 

@@ -3,7 +3,7 @@ import Blog from "../models/blogModel.js"
 
 //Get Blog
 const getBlog = asyncHandler(async (req, res) => {
-    const blog = await Blog.find({ blog: req.blog._id });
+    const blog = await Blog.find({ blog: req.blog});
     res.json(blog);
   });
 
@@ -11,10 +11,10 @@ const getBlog = asyncHandler(async (req, res) => {
 const getBlogById = asyncHandler(async (req, res) => {
     const blog = await Blog.findById(req.params.id);
   
-    if (note) {
+    if (blog) {
       res.json(blog);
     } else {
-      res.status(404).json({ message: "Note not found" });
+      res.status(404).json({ message: "Blog not found" });
     }
   
     res.json(blog);
@@ -22,54 +22,65 @@ const getBlogById = asyncHandler(async (req, res) => {
 
 //Create Blog
 const createBlog = asyncHandler(async (req, res) => {
-    const { title, content, PictureId } = req.body;
+  const {userId, categoryId, title, content, isDeleted, pictureId } = req.body;
   
-    if (!title || !content || !PictureId) {
-      res.status(400);
-      throw new Error("Please Fill all the feilds");
-      return;
-    } else {
-      const blog = new Blog({ blog: req.blog._id, title, content, PictureId });
-  
-      const createdNote = await note.save();
-  
-      res.status(201).json(createdNote);
-    }
+  const blog = await Blog.create({
+    userId,
+    categoryId,
+    title,
+    content,
+    isDeleted,
+    pictureId,
+  });
+
+  if (blog) {
+    res.status(201).json({
+      _id: blog._id,
+      userId: blog.userId,
+      categoryId: blog.categoryId,
+      title: blog.title,
+      content: blog.content,
+      isDeleted: blog.isDeleted,
+      pictureId: blog.pictureId
+    });
+  } else {
+    res.status(400);
+    throw new Error("Blog not found");
+  }
   });
 
 //Delete Blog
 const deleteBlog = asyncHandler(async (req, res) => {
     const blog = await Blog.findById(req.params.id);
   
-    if (blog.user.toString() !== req.blog._id.toString()) {
-      res.status(401);
-      throw new Error("You can't perform this action");
-    }
+    // if (blog.user.toString() !== req.blog._id.toString()) {
+    //   res.status(401);
+    //   throw new Error("You can't perform this action");
+    // }
   
     if (blog) {
       await blog.remove();
-      res.json({ message: "Note Removed" });
+      res.json({ message: "Blog Removed" });
     } else {
       res.status(404);
-      throw new Error("Note not Found");
+      throw new Error("Blog not Found");
     }
   });
   
 //Update Blog
 const updateBlog = asyncHandler(async (req, res) => {
-    const { title, content, category } = req.body;
+    const { title, content } = req.body;
   
     const blog = await Blog.findById(req.params.id);
   
-    if (blog.user.toString() !== req.blog._id.toString()) {
-      res.status(401);
-      throw new Error("You can't perform this action");
-    }
+    // if (blog.user.toString() !== req.blog._id.toString()) {
+    //   res.status(401);
+    //   throw new Error("You can't perform this action");
+    // }
   
     if (blog) {
       blog.title = title;
       blog.content = content;
-      blog.category = category;
   
       const updatedBlog = await blog.save();
       res.json(updatedBlog);

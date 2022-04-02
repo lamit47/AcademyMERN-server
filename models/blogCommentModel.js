@@ -1,18 +1,18 @@
-import { Int32 } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
 
 const blogCommentSchema = mongoose.Schema(
     {
-      BlogId: {
-        type: Int32,
+      blogId: {
+        type: ObjectId,
         required: true,
       },
-      UserId: {
-        type: Int32,
-        required: true,
-      },
-      Content: {
+      content: {
         type: String,
+        required: true,
+      },
+      user: {
+        type: Object,
         required: true,
       }
     },

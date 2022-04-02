@@ -1,18 +1,21 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const pictureSchema = mongoose.Schema(
     {
-      PicturePath: {
+      id: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+      },
+      picturePath: {
         type: String,
-        required: true,
+        required: true
       }
     },
     {
-      timestamps: true,
+      versionKey: false
     }
 );
-
-
+  
 const Picture = mongoose.model("Picture", pictureSchema);
 
 export default Picture;

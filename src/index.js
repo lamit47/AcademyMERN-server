@@ -3,13 +3,22 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import posts from '../routers/posts.js';
-import blogRouter from '../routers/blogRouter.js';
+import { errorHandler, notFound } from '../middlewares/errorMiddleware.js';
+
 import userRouter from '../routers/user.route.js';
 import authRouter from '../routers/auth.router.js';
 import categoryRouter from '../routers/category.router.js';
 import examRouter from '../routers/exam.router.js';
-import { errorHandler, notFound } from '../middlewares/errorMiddleware.js';
+
+import blogRouter from '../routers/blogRouter.js';
+import blogCommentRouter from '../routers/blogCommentRouter.js';
+import willLearnRouter from '../routers/willLearnRouter.js';
+import pictureRouter from '../routers/pictureRouter.js';
+import courseRouter from '../routers/courseRouter.js';
+import requirementRouter from '../routers/requirementRouter.js';
+import questionRouter from '../routers/questionRouter.js';
+import answerRouter from '../routers/answerRouter.js';
+
 
 dotenv.config();
 
@@ -28,8 +37,6 @@ app.get('/',(req, res) => {
   res.send('Hello world!!!')
 })
 
-app.use('/posts',posts);
-
 app.use('/api/blog', blogRouter);
 
 app.use('/api/category', categoryRouter);
@@ -38,6 +45,24 @@ app.use('/api/category', categoryRouter);
 app.use('/api/exam', examRouter);
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
+
+app.use('/api/blogComment', blogCommentRouter);
+
+app.use('/api/willLearn', willLearnRouter);
+
+app.use('/api/picture/upload' , pictureRouter);
+
+app.use('/api/course' , courseRouter);
+
+app.use('/api/requirement' , requirementRouter);
+
+app.use('/api/question' , questionRouter);
+
+app.use('/api/answer' , answerRouter);
+
+
+
+
 
 
 

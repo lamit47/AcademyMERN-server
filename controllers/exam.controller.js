@@ -1,6 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Exam from '../models/exam.model.js';
-import Question from '../models/question.model.js';
+import ExamQuestion from '../models/examquestion.model.js';
 import httpStatusCodes from '../utils/httpStatusCodes.js';
 import mongoose from 'mongoose';
 
@@ -98,7 +98,7 @@ const createQuestion = asyncHandler(async (req, res) => {
 
   let objectId = mongoose.Types.ObjectId(id);
 
-  let examQuestion = new Question({ content, options, rightOption });
+  let examQuestion = new ExamQuestion({ content, options, rightOption });
   examQuestion.examId = objectId;
   examQuestion = await examQuestion.save();
 
@@ -111,9 +111,9 @@ const updateQuestion = asyncHandler(async (req, res) => {
   if (!id) {
     return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Vui lòng nhập id' });
   }
-  let question = await Question.findById(id);
+  let examQuestion = await ExamQuestion.findById(id);
 
-  if (!question) {
+  if (!examQuestion) {
     return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'Không tìm câu hỏi này' });
   }
   
@@ -123,12 +123,12 @@ const updateQuestion = asyncHandler(async (req, res) => {
     return res.status(httpStatusCodes.BAD_REQUEST).json({status: false, message: 'Vui lòng nhập đầy đủ các fields'});
   }
 
-  question.content = content;
-  question.options = options;
-  question.rightOption = rightOption;
-  question = await question.save();
+  examQuestion.content = content;
+  examQuestion.options = options;
+  examQuestion.rightOption = rightOption;
+  examQuestion = await examQuestion.save();
 
-  return res.status(httpStatusCodes.OK).json(question);
+  return res.status(httpStatusCodes.OK).json(examQuestion);
 });
 
 //delete question
@@ -137,14 +137,14 @@ const deleteQuestion = asyncHandler(async (req, res) => {
   if (!id) {
     return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Vui lòng nhập id' });
   }
-  let question = await Question.findById(id);
+  let examQuestion = await ExamQuestion.findById(id);
 
-  if (!question) {
+  if (!examQuestion) {
     return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'Không tìm câu hỏi này' });
   }
 
-  question.isDeleted = true;
-  question = await question.save();
+  examQuestion.isDeleted = true;
+  examQuestion = await examQuestion.save();
 
   return res.status(httpStatusCodes.OK).json({ status: 'success' });
 });
@@ -162,7 +162,7 @@ const getListQuestions = asyncHandler(async (req, res) => {
   }
 
   let objectId = mongoose.Types.ObjectId(id);
-  let data = await Question.find({ 'examId': objectId }).select('-rightOption -options');
+  let data = await ExamQuestion.find({ 'examId': objectId }).select('-rightOption -options');
 
   return res.status(httpStatusCodes.OK).json(data);
 });
@@ -173,12 +173,12 @@ const getQuestion = asyncHandler(async (req, res) => {
   if (!id) {
     return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Vui lòng nhập id' });
   }
-  let question = await Question.findById(id);
+  let examQuestion = await ExamQuestion.findById(id);
 
-  if (!question) {
+  if (!examQuestion) {
     return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'Không tìm thấy câu hỏi này' });
   }
-  return res.status(httpStatusCodes.OK).json(question);
+  return res.status(httpStatusCodes.OK).json(examQuestion);
 });
 
 export { 

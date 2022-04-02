@@ -1,18 +1,14 @@
 import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
 
-const answerSchema = mongoose.Schema(
+const RequirementSchema = mongoose.Schema(
     {
-      questionId: {
+      courseId: {
         type: ObjectId,
         required: true,
       },
       content: {
         type: String,
-        required: true,
-      },
-      user: {
-        type: Object,
         required: true,
       }
     },
@@ -22,6 +18,6 @@ const answerSchema = mongoose.Schema(
 );
 
 
-const Answer = mongoose.model("Answer", answerSchema);
+const Requirement = mongoose.model("Requirement", RequirementSchema);
 
-export default Answer;
+export default Requirement;
