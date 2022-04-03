@@ -9,7 +9,9 @@ import {
     postRegisterCourse, 
     getRegistedUsers, 
     getWillLearns, 
-    getRequirements 
+    getRequirements,
+    getTrackByCourseId,
+    getStepByCourseId
 } from '../controllers/course.controller.js';
 
 const router = express.Router();
@@ -30,5 +32,8 @@ router.get('/:id/IsRegisted', verifyToken, getRegistedUsers);
 
 router.get('/:id/WillLearns', getWillLearns);
 router.get('/:id/Requirements', getRequirements);
+
+router.get('/:id/Tracks', getTrackByCourseId);
+router.get('/:id/TrackSteps', getStepByCourseId);
 
 export default router;

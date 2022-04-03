@@ -5,6 +5,8 @@ import asyncHandler from "express-async-handler";
 import WillLearn from "../models/willLearn.model.js";
 import Requirement from "../models/requirement.model.js";
 import httpStatusCodes from "../utils/httpStatusCodes.js";
+import Track from "../models/track.model.js";
+import Step from "../models/step.model.js";
 
 // create a course
 const postCourse = asyncHandler(async (req, res) => {
@@ -158,6 +160,41 @@ const getRequirements = asyncHandler(async (req, res) => {
   return res.status(httpStatusCodes.OK).json(requirements);
 })
 
+// GET tracks
+const getTrackByCourseId = asyncHandler(async (req, res) => {
+  let id = req.params.id;
+  let tracks = await Track.find({courseId: id});
+
+  if (!tracks) {
+      return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'not found' });
+  }
+  
+  res.status(httpStatusCodes.OK).json(tracks);
+})
+
+// GET track steps
+const getStepByCourseId = asyncHandler(async (req, res) => {
+  let id = req.params.id;
+  let tracks = await Track.find({courseId: id});
+
+  if (!tracks) {
+      return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'not found' });
+  }
+  console.log(tracks);
+  let listTracks = [];
+  for (let track of tracks) {
+    let trackObj = track.toObject();
+    delete trackObj.isDeleted;
+    delete trackObj.createdAt;
+    delete trackObj.updatedAt;
+    const steps = await Step.find({trackId: track.id }) 
+    trackObj.steps = steps;
+    listTracks.push(trackObj);
+  }
+
+  res.status(httpStatusCodes.OK).json(listTracks);
+})
+
 export {
-  postCourse, getCourses, getCourseById, putCourseById, deleteCourseById, postRegisterCourse, getRegistedUsers, getWillLearns, getRequirements
+  postCourse, getCourses, getCourseById, putCourseById, deleteCourseById, postRegisterCourse, getRegistedUsers, getWillLearns, getRequirements, getTrackByCourseId, getStepByCourseId
 }

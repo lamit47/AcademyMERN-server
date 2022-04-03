@@ -18,6 +18,8 @@ import pictureRouter from '../routers/picture.router.js'
 import courseRouter from '../routers/course.router.js'
 import willLearnRouter from '../routers/willLearn.router.js';
 import requirementRouter from '../routers/requirement.router.js';
+import trackRouter from '../routers/track.router.js';
+import stepRouter from '../routers/step.router.js';
 
 
 dotenv.config();
@@ -65,6 +67,10 @@ app.use('/api/answer' , answerRouter);
 app.use('/api/Picture/Upload' , pictureRouter);
 
 app.use('/api/Course' , courseRouter);
+
+app.use('/api/Track' , trackRouter);
+
+app.use('/api/Step' , stepRouter);
 
 app.use(notFound);
 app.use(errorHandler);
