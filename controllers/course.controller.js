@@ -116,7 +116,7 @@ const deleteCourseById = asyncHandler(async (req, res, next) => {
 // register course
 const postRegisterCourse = asyncHandler(async (req, res) => {
   const user = req.user
-
+  console.log(user)
   const attendance = await Attendance.findOne({ userId: user._id, courseId: req.params.id }).exec()
 
   if (attendance) {
@@ -134,14 +134,15 @@ const postRegisterCourse = asyncHandler(async (req, res) => {
 })
 
 // registed users
-const getRegistedUsers = asyncHandler(async (res, req) => {
+const getRegistedUsers = asyncHandler(async (req, res) => {
+  let userId = req.user.id;
+  console.log(userId);
 
-  const attendance = Attendance.findOne({ userId: req.user._id, courseId: req.params.id })
-
+  const attendance = Attendance.findOne({ userId: userId, courseId: req.params.id })
   if (attendance) {
-    res.status(200).json({ isRegisted: true })
+    res.status(200).json(true)
   } else {
-    res.status(401).json({ isRegisted: false })
+    res.status(401).json(false)
   }
 })
 
@@ -180,15 +181,23 @@ const getStepByCourseId = asyncHandler(async (req, res) => {
   if (!tracks) {
       return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'not found' });
   }
-  console.log(tracks);
   let listTracks = [];
   for (let track of tracks) {
     let trackObj = track.toObject();
+
     delete trackObj.isDeleted;
     delete trackObj.createdAt;
     delete trackObj.updatedAt;
+
     const steps = await Step.find({trackId: track.id }) 
-    trackObj.steps = steps;
+    
+    let listSteps = steps.map(step => {
+      let newStep = step.toObject();
+      delete newStep.content;
+      return newStep;
+    })
+
+    trackObj.steps = listSteps;
     listTracks.push(trackObj);
   }
 

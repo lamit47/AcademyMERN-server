@@ -9,6 +9,9 @@ const createTrack = asyncHandler(async (req, res) => {
     let track = await Track.create({ courseId, title });
     
     track = track.toObject();
+    delete track.createdAt;
+    delete track.updatedAt;
+
     return res.status(httpStatusCodes.OK).json(track);
 });
 
@@ -42,20 +45,33 @@ const updateTrack = asyncHandler(async (req, res) => {
   track = await track.save();
 
   track = track.toObject();
+  delete track.createdAt;
+  delete track.updatedAt;
   
   return res.status(httpStatusCodes.OK).json(track);
 });
 
 // GET
-const getTrackByStepId = asyncHandler(async (req, res) => {
+const getStepsByTrackId = asyncHandler(async (req, res) => {
     let id = req.params.id;
-    let step = await Step.find({trackId: id});
+    let steps = await Step.find({trackId: id});
 
-    if (!step) {
+    if (!steps) {
         return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'not found' });
     }
+    console.log(steps)
+    let listSteps = [];
+    for (const step of steps) {
+      let newStep = step.toObject();
+      delete newStep.content;
+      delete newStep.createdAt;
+      delete newStep.updatedAt;
+      listSteps.push(newStep);
+    }   
     
-    res.status(httpStatusCodes.OK).json(step);
+    console.log(listSteps)
+    
+    res.status(httpStatusCodes.OK).json(listSteps);
 })
 
-export { createTrack, deleteTrack, updateTrack, getTrackByStepId }
+export { createTrack, deleteTrack, updateTrack, getStepsByTrackId }

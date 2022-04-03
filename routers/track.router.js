@@ -1,5 +1,5 @@
 import express from 'express';
-import { createTrack, deleteTrack, updateTrack, getTrackByStepId } from '../controllers/track.controller.js';
+import { createTrack, deleteTrack, updateTrack, getStepsByTrackId } from '../controllers/track.controller.js';
 
 const router = express.Router();
 
@@ -10,6 +10,6 @@ const router = express.Router();
 
     router.route("/").post(createTrack);
 
-    router.get("/:id/Steps", getTrackByStepId);
+    router.get("/:id/Steps", getStepsByTrackId);
 
 export default router;

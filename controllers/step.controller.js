@@ -1,4 +1,5 @@
 import asyncHandler from "express-async-handler";
+import { stringify } from "uuid";
 import Step from "../models/step.model.js"
 import Track from "../models/track.model.js";
 import httpStatusCodes from "../utils/httpStatusCodes.js";
@@ -57,6 +58,7 @@ const getStepById = asyncHandler(async (req, res) => {
         return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'not found' });
     }
     step = step.toObject();
+
     res.status(httpStatusCodes.OK).json(step);
 })
 

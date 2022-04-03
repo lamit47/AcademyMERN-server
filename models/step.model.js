@@ -16,8 +16,7 @@ const stepSchema = mongoose.Schema(
         required: true
       },
       content: {
-        type: String,
-        required: true
+        type: String
       },
       embedLink: {
         type: String,
@@ -44,6 +43,10 @@ stepSchema.set('toJSON', {
   virtuals: true,
   transform: function (doc, ret) {
     delete ret._id
+    delete ret.createdAt;
+    delete ret.updatedAt;
+    delete ret.isDeleted;
+
   }
 });
 
@@ -51,6 +54,10 @@ stepSchema.set('toObject', {
   virtuals: true,
   transform: function (doc, ret) {
     delete ret._id
+    delete ret.createdAt;
+    delete ret.updatedAt;
+    delete ret.isDeleted;
+
   }
 });
   

@@ -1,5 +1,4 @@
 import express from 'express';
-import { verifyToken } from '../middlewares/auth.middleware.js';
 import { 
     postCourse, 
     getCourses, 
@@ -13,6 +12,7 @@ import {
     getTrackByCourseId,
     getStepByCourseId
 } from '../controllers/course.controller.js';
+import { verifyToken } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
@@ -26,9 +26,9 @@ router.route('/:id')
     .put(putCourseById)
     .delete(deleteCourseById);
 
-router.post('/:id/Register', verifyToken, postRegisterCourse);
+router.route('/:id/Register').post( verifyToken, postRegisterCourse);
 
-router.get('/:id/IsRegisted', verifyToken, getRegistedUsers);
+router.route('/:id/IsRegisted').get( verifyToken, getRegistedUsers);
 
 router.get('/:id/WillLearns', getWillLearns);
 router.get('/:id/Requirements', getRequirements);
