@@ -8,7 +8,8 @@ import {
   updateQuestion,
   deleteQuestion,
   getListQuestions,
-  getQuestion
+  getQuestion,
+  getExamQuestions
 } from '../controllers/exam.controller.js';
 const router = express.Router();
 
@@ -26,5 +27,7 @@ router.route("/:examId/questions")
   .get(getListQuestions);
 router.route("/:questionId/questionfull")
   .get(getQuestion);
+  router.route("/:examId/examquestions")
+  .get(getExamQuestions);
 
 export default router;

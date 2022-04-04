@@ -10,7 +10,8 @@ import {
     getWillLearns, 
     getRequirements,
     getTrackByCourseId,
-    getStepByCourseId
+    getStepByCourseId,
+    getExamsCourse
 } from '../controllers/course.controller.js';
 import { verifyToken } from '../middlewares/auth.middleware.js';
 
@@ -34,6 +35,8 @@ router.get('/:id/WillLearns', getWillLearns);
 router.get('/:id/Requirements', getRequirements);
 
 router.get('/:id/Tracks', getTrackByCourseId);
-router.get('/:id/TrackSteps', getStepByCourseId);
+router.route('/:id/TrackSteps').get(verifyToken , getStepByCourseId);
+
+router.route('/:id/Exams').get(getExamsCourse);
 
 export default router;

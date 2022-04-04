@@ -7,6 +7,8 @@ import Requirement from "../models/requirement.model.js";
 import httpStatusCodes from "../utils/httpStatusCodes.js";
 import Track from "../models/track.model.js";
 import Step from "../models/step.model.js";
+import Progress from "../models/progress.model.js";
+import Exam from "../models/exam.model.js";
 
 // create a course
 const postCourse = asyncHandler(async (req, res) => {
@@ -192,8 +194,19 @@ const getStepByCourseId = asyncHandler(async (req, res) => {
     const steps = await Step.find({trackId: track.id }) 
     
     let listSteps = steps.map(step => {
+      let progress = Progress.find({stepId: step.id, user: req.user.id});
+
       let newStep = step.toObject();
+
       delete newStep.content;
+      delete newStep.embedLink;
+
+      if (!progress) {
+        newStep.completed = true;
+      } else {
+        newStep.completed = false;
+      }
+      
       return newStep;
     })
 
@@ -201,9 +214,24 @@ const getStepByCourseId = asyncHandler(async (req, res) => {
     listTracks.push(trackObj);
   }
 
+  console.log(listTracks)
+
   res.status(httpStatusCodes.OK).json(listTracks);
+})
+
+//GET course exams
+const getExamsCourse = asyncHandler(async (req, res) => {
+
+  let exams = await Exam.find({courseId: req.params.id});
+
+  if (!exams) {
+    res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'not found' });
+  } else {
+    res.status(200).json(exams);
+  }
 })
 
 export {
   postCourse, getCourses, getCourseById, putCourseById, deleteCourseById, postRegisterCourse, getRegistedUsers, getWillLearns, getRequirements, getTrackByCourseId, getStepByCourseId
+  , getExamsCourse
 }

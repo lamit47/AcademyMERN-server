@@ -1,8 +1,10 @@
 import asyncHandler from "express-async-handler";
 import { stringify } from "uuid";
+import Progress from "../models/progress.model.js";
 import Step from "../models/step.model.js"
 import Track from "../models/track.model.js";
 import httpStatusCodes from "../utils/httpStatusCodes.js";
+import mongoose from "mongoose";
 
 // POST
 const createStep = asyncHandler(async (req, res) => {
@@ -51,7 +53,7 @@ const updateStep = asyncHandler(async (req, res) => {
 
 // GET
 const getStepById = asyncHandler(async (req, res) => {
-    let id = req.params.id;
+    let id = req.params.id;    
     let step = await Step.findById(id);
 
     if (!step) {
@@ -62,4 +64,23 @@ const getStepById = asyncHandler(async (req, res) => {
     res.status(httpStatusCodes.OK).json(step);
 })
 
-export { createStep, deleteStep, updateStep, getStepById }
+// POST progress
+const postProgress = asyncHandler(async (req, res) => {
+  let userId = req.user.id;
+
+  let progress = await Progress.find({userId: userId , stepId: req.params.id});
+
+  if (progress) {
+    let newProgress = new Progress({
+      stepId: req.params.id,
+      userId: userId
+    })
+    newProgress.save();
+    res.status(200).json(true);  
+  } else {
+    res.status(httpStatusCodes.OK).json(false);
+  }
+
+})
+
+export { createStep, deleteStep, updateStep, getStepById, postProgress }

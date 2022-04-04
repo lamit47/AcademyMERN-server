@@ -1,14 +1,17 @@
+import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
 
 const examQuestionSchema = mongoose.Schema(
   {
-    examId: {
-      type: Object,
-      require: true
-    },
-    content: {
-      type: String,
-      require: true
+    question: {
+      examId: {
+        type: ObjectId,
+        require: true
+      },
+      content: {
+        type: String,
+        require: true
+      },
     },
     options: [{
       content: {
@@ -17,8 +20,10 @@ const examQuestionSchema = mongoose.Schema(
       }
     }],
     rightOption: {
-      type: Number,
-      require: true
+      index: {
+        type: Number,
+        require: true
+      }
     },
     isDeleted: {
       type: Boolean,
@@ -27,7 +32,8 @@ const examQuestionSchema = mongoose.Schema(
     }
   },
   {
-    timestamps: true
+    timestamps: true,
+    versionKey: false
   }
 );
 
@@ -40,6 +46,15 @@ examQuestionSchema.virtual('id').get(function () {
 examQuestionSchema.set('toJSON', {
   virtuals: true,
   versionKey:false,
+  transform: function (doc, ret) {
+    delete ret._id
+    delete ret.createdAt
+    delete ret.updatedAt
+  }
+});
+
+examQuestionSchema.set('toObject', {
+  virtuals: true,
   transform: function (doc, ret) {
     delete ret._id
   }

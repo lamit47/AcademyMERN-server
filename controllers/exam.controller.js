@@ -90,19 +90,21 @@ const createQuestion = asyncHandler(async (req, res) => {
     return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'Không tìm thấy bài kiểm tra này' });
   }
   
-  let { content, options, rightOption } = req.body;
+  let { question, options, rightOption } = req.body;
 
-  if (!content || !options || !rightOption) {
+  if (!question || !options || !rightOption) {
     return res.status(httpStatusCodes.BAD_REQUEST).json({status: false, message: 'Vui lòng nhập đầy đủ các fields'});
   }
 
   let objectId = mongoose.Types.ObjectId(id);
 
-  let examQuestion = new ExamQuestion({ content, options, rightOption });
-  examQuestion.examId = objectId;
+  let examQuestion = new ExamQuestion({ question, options, rightOption });
+  //examQuestion.examId = objectId;
   examQuestion = await examQuestion.save();
 
-  return res.status(httpStatusCodes.OK).json(examQuestion);
+  let resFormat = examQuestion.toObject();
+
+  return res.status(httpStatusCodes.OK).json(handlerRes(resFormat));
 });
 
 //update question
@@ -181,6 +183,65 @@ const getQuestion = asyncHandler(async (req, res) => {
   return res.status(httpStatusCodes.OK).json(examQuestion);
 });
 
+//GET exam questions
+const getExamQuestions = asyncHandler(async (req, res) => {
+  let id = req.params.examId;
+
+  let examQuestions = await ExamQuestion.find({examId : id});
+
+  if (examQuestions) {
+
+    let resFormat = examQuestions.map(questions => {
+      let questionObj = questions.toObject();
+      return handlerRes(questionObj);
+    })  
+
+    return res.status(httpStatusCodes.OK).json(resFormat);
+  } else {
+    return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'Không tìm thấy câu hỏi nào' });
+  }
+})
+
+//GET test
+const getResult = asyncHandler(async (req, res) => {
+  //here
+})
+
+const handlerRes = (resFormat) => {
+  let examId = resFormat.question.examId;
+  let content = resFormat.question.content;
+  let optionsArr = resFormat.options;
+  let i = resFormat.rightOption.index;
+  
+  resFormat.question = {
+    id: resFormat.id,
+    examId: examId,
+    content: content,
+    isDeleted: resFormat.isDeleted
+  }
+
+  resFormat.options = optionsArr.map(option => {
+    return {
+      id: option._id,
+      questionId: resFormat.id,
+      content: option.content
+    }
+  })
+
+  resFormat.rightOption = {
+    questionId: resFormat.id,
+    optionId: resFormat.options.find((option, index) => index == i).id,
+    index: i
+  }
+
+  delete resFormat.isDeleted;
+  delete resFormat.id;
+  delete resFormat.createdAt;
+  delete resFormat.updatedAt;
+
+  return resFormat;
+}
+
 export { 
   createExam, 
   getByExamId, 
@@ -190,5 +251,6 @@ export {
   updateQuestion,
   deleteQuestion,
   getListQuestions,
-  getQuestion
+  getQuestion,
+  getExamQuestions
 };

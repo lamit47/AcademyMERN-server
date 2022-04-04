@@ -1,5 +1,7 @@
 import express from 'express';
-import { createStep, deleteStep, updateStep, getStepById } from '../controllers/step.controller.js';
+import { createStep, deleteStep, updateStep, getStepById, postProgress } from '../controllers/step.controller.js';
+import { verifyToken } from '../middlewares/auth.middleware.js';
+
 
 const router = express.Router();
 
@@ -10,5 +12,7 @@ const router = express.Router();
     .get(getStepById);
 
     router.route("/").post(createStep);
+
+    router.route("/:id/Progress").post(verifyToken, postProgress);
 
 export default router;
