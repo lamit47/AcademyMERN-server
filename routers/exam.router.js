@@ -9,8 +9,12 @@ import {
   deleteQuestion,
   getListQuestions,
   getQuestion,
-  getExamQuestions
+  getExamQuestions,
+  getResult,
+  getFinished
 } from '../controllers/exam.controller.js';
+import { verifyToken } from '../middlewares/auth.middleware.js';
+
 const router = express.Router();
 
 router.route("/").post(createExam);
@@ -25,9 +29,16 @@ router.route("/:questionId/question")
   .delete(deleteQuestion);
 router.route("/:examId/questions")
   .get(getListQuestions);
+
 router.route("/:questionId/questionfull")
   .get(getQuestion);
-  router.route("/:examId/examquestions")
+
+router.route("/:examId/examquestions")
   .get(getExamQuestions);
+
+router.route("/:id/Test")
+  .get(verifyToken, getResult);
+
+router.route("/:id/isfinished").get(getFinished);
 
 export default router;

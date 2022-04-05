@@ -1,48 +1,48 @@
-// import { ObjectId } from 'mongodb';
-// import mongoose from 'mongoose';
+import { ObjectId } from 'mongodb';
+import mongoose from 'mongoose';
 
-// const certificationSchema = mongoose.Schema(
-//     {
-//       questionId: {
-//         type: ObjectId,
-//         required: true,
-//       },
-//       userId: {
-//         type: ObjectId,
-//         required: true,
-//       },
-//       content: {
-//         type: String,
-//         required: true,
-//       }
-//     },
-//     {
-//       timestamps: true,
-//     }
-// );
+const certificationSchema = mongoose.Schema(
+    {
+      courseId: {
+        type: ObjectId,
+        required: true,
+      },
+      userId: {
+        type: ObjectId,
+        required: true,
+      },
+      mark: {
+        type: Number,
+        required: true,
+      }
+    },
+    {
+      timestamps: true,
+    }
+);
 
-// // Duplicate the ID field.
-// certificationSchema.virtual('id').get(function () {
-//   return this._id.toHexString();
-// });
+// Duplicate the ID field.
+certificationSchema.virtual('id').get(function () {
+  return this._id.toHexString();
+});
 
-// // Ensure virtual fields are serialised.
-// certificationSchema.set('toJSON', {
-//   virtuals: true,
-//   versionKey:false,
-//   transform: function (doc, ret) {
-//     delete ret._id
-//   }
-// });
+// Ensure virtual fields are serialised.
+certificationSchema.set('toJSON', {
+  virtuals: true,
+  versionKey:false,
+  transform: function (doc, ret) {
+    delete ret._id
+  }
+});
 
-// certificationSchema.set('toObject', {
-//   virtuals: true,
-//   versionKey:false,
-//   transform: function (doc, ret) {
-//     delete ret._id
-//   }
-// });
+certificationSchema.set('toObject', {
+  virtuals: true,
+  versionKey:false,
+  transform: function (doc, ret) {
+    delete ret._id
+  }
+});
 
-// const Answer = mongoose.model("Answer", certificationSchema);
+const Certification = mongoose.model("Certification", certificationSchema);
 
-// export default Answer;
+export default Certification;

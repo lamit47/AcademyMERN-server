@@ -117,13 +117,12 @@ const deleteCourseById = asyncHandler(async (req, res, next) => {
 
 // register course
 const postRegisterCourse = asyncHandler(async (req, res) => {
-  const user = req.user
-  console.log(user)
-  const attendance = await Attendance.findOne({ userId: user._id, courseId: req.params.id }).exec()
+  let userId = req.user.id;
+  const attendance = await Attendance.findOne({ userId: userId, courseId: req.params.id })
 
-  if (attendance) {
+  if (!attendance) {
     const newAttendance = new Attendance({
-      userId: user._id,
+      userId: userId,
       courseId: req.params.id,
       credits: 0
     })
@@ -135,16 +134,32 @@ const postRegisterCourse = asyncHandler(async (req, res) => {
   }
 })
 
-// registed users
-const getRegistedUsers = asyncHandler(async (req, res) => {
+// registed 
+const getRegisted = asyncHandler(async (req, res) => {
   let userId = req.user.id;
-  console.log(userId);
 
-  const attendance = Attendance.findOne({ userId: userId, courseId: req.params.id })
+  const attendance = await Attendance.findOne({ userId: userId, courseId: req.params.id })
   if (attendance) {
     res.status(200).json(true)
   } else {
-    res.status(401).json(false)
+    res.status(200).json(false)
+  }
+})
+
+// get registed course
+const getRegistedUsers = asyncHandler(async (req, res) => {
+  let userId = req.params.userId;
+
+  const attendances = await Attendance.find({ userId: userId})
+  
+  let listCourses = await attendances.map(async attendance => {
+    return await Course.findById(attendance.courseId)
+  })
+
+  if (listCourses) {
+    res.status(200).json(listCourses)
+  } else {
+    res.status(401).json({ status: 'error', message: 'not found' })
   }
 })
 
@@ -192,29 +207,26 @@ const getStepByCourseId = asyncHandler(async (req, res) => {
     delete trackObj.updatedAt;
 
     const steps = await Step.find({trackId: track.id }) 
-    
-    let listSteps = steps.map(step => {
-      let progress = Progress.find({stepId: step.id, user: req.user.id});
 
+    let listSteps = [];
+    for (const step of steps) {
       let newStep = step.toObject();
+     
+      let progress = await Progress.find({stepId: newStep.id, userId: req.user.id});
 
       delete newStep.content;
       delete newStep.embedLink;
-
-      if (!progress) {
-        newStep.completed = true;
-      } else {
+      if (progress.length == 0) {
         newStep.completed = false;
+      } else {
+        newStep.completed = true;
       }
-      
-      return newStep;
-    })
-
+      listSteps.push(newStep);
+    }
+  
     trackObj.steps = listSteps;
     listTracks.push(trackObj);
   }
-
-  console.log(listTracks)
 
   res.status(httpStatusCodes.OK).json(listTracks);
 })
@@ -231,7 +243,12 @@ const getExamsCourse = asyncHandler(async (req, res) => {
   }
 })
 
+//GET  certify
+const getCertifications = asyncHandler(async (req, res) => {
+  res.status(200).json({message: "success!"})
+})
+
 export {
-  postCourse, getCourses, getCourseById, putCourseById, deleteCourseById, postRegisterCourse, getRegistedUsers, getWillLearns, getRequirements, getTrackByCourseId, getStepByCourseId
-  , getExamsCourse
+  postCourse, getCourses, getCourseById, putCourseById, deleteCourseById, postRegisterCourse, getRegistedUsers, getRegisted, getWillLearns, getRequirements, getTrackByCourseId, getStepByCourseId
+  , getExamsCourse, getCertifications
 }

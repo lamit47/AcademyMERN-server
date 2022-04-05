@@ -67,20 +67,21 @@ const getStepById = asyncHandler(async (req, res) => {
 // POST progress
 const postProgress = asyncHandler(async (req, res) => {
   let userId = req.user.id;
-
+  
   let progress = await Progress.find({userId: userId , stepId: req.params.id});
+  console.log(progress);
 
-  if (progress) {
+  if (!!progress) {
     let newProgress = new Progress({
       stepId: req.params.id,
       userId: userId
     })
-    newProgress.save();
+
+    await newProgress.save();
     res.status(200).json(true);  
   } else {
-    res.status(httpStatusCodes.OK).json(false);
+    res.status(200).json(false);
   }
-
 })
 
 export { createStep, deleteStep, updateStep, getStepById, postProgress }

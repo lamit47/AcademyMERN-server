@@ -202,9 +202,24 @@ const getExamQuestions = asyncHandler(async (req, res) => {
   }
 })
 
+//GET isFinished
+const getFinished = asyncHandler(async (req, res) => {
+  const examId = req.params.id;
+
+
+})
+
+//POST anwser
+const postAnwser = asyncHandler(async (req, res) => {
+  const examUserId = req.params.examUserId;
+  
+})
+
 //GET test
 const getResult = asyncHandler(async (req, res) => {
   //here
+  let examId = req.params.examId;
+
 })
 
 const handlerRes = (resFormat) => {
@@ -252,5 +267,8 @@ export {
   deleteQuestion,
   getListQuestions,
   getQuestion,
-  getExamQuestions
+  getExamQuestions,
+  getResult,
+  postAnwser,
+  getFinished
 };
