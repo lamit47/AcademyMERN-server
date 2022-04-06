@@ -1,25 +1,35 @@
 import asyncHandler from "express-async-handler";
 import Blog from "../models/blog.model.js"
 import User from "../models/user.model.js"
+import Picture from "../models/picture.model.js"
 import BlogComment from "../models/blogComment.model.js"
 import httpStatusCodes from "../utils/httpStatusCodes.js";
 
 //Get blogs
 const getBlogs = asyncHandler(async (req, res) => {
+  const hostname = process.env.HOSTNAME;
   let { skip, take, categoryId } = req.query;
   let list;
-  if (categoryId == 0) {
+  if (categoryId == 0 || !categoryId) {
     list = await Blog.find({ isDeleted: false }).limit(take).skip(skip).sort('-updatedAt');
   } else {
     list = await Blog.find({ categoryId: categoryId, isDeleted: false }).limit(take).skip(skip).sort('-updatedAt');
   }
-  return res.status(httpStatusCodes.OK).send(list);
+
+  let blogs = [];
+  for (let item of list) {
+    let blog = item.toObject();
+    let picture = await Picture.findById(blog.pictureId);
+    blog.picturePath = hostname + picture.picturePath;
+    blogs.push(blog);
+  }
+  return res.status(httpStatusCodes.OK).send(blogs);
 });
 
 //GetBlogbyID
 const getBlogById = asyncHandler(async (req, res) => {
   let blog = await Blog.findById(req.params.id);
-
+  console.log("1233")
   if (!blog) {
     return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'Không tìm thấy blog này' });
   }

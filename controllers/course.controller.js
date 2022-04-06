@@ -9,6 +9,7 @@ import Track from "../models/track.model.js";
 import Step from "../models/step.model.js";
 import Progress from "../models/progress.model.js";
 import Exam from "../models/exam.model.js";
+import Certification from "../models/certification.model.js";
 
 // create a course
 const postCourse = asyncHandler(async (req, res) => {
@@ -50,7 +51,7 @@ const getCourses = asyncHandler(async (req, res) => {
       courses.push(course);
     }
   }
-  return res.status(httpStatusCodes.OK).send(courses);
+  return res.status(httpStatusCodes.OK).send(courses.length === 0 ? list : courses);
 })
 
 // get by id
@@ -245,10 +246,45 @@ const getExamsCourse = asyncHandler(async (req, res) => {
 
 //GET  certify
 const getCertifications = asyncHandler(async (req, res) => {
-  res.status(200).json({message: "success!"})
+  let userId = req.params.id;
+
+  let certifications = await Certification.find({userId: userId});
+
+  if (certifications.length == 0) {
+    res.status(httpStatusCodes.NOT_FOUND).json({message: "not found!"})
+  } else {
+    certifications = certifications.toObject();
+    delete certifications.id;
+
+    res.status(httpStatusCodes.OK).json(certifications);
+  }
+
+})
+
+//POST certify
+const postCertify = asyncHandler(async (req, res) => {
+  const courseId = req.params.id;
+
+  let certification = await Certification.findOne({courseId: courseId, userId: req.user.id});
+
+  let course = await Course.findById(courseId);
+
+  course = course.toObject();
+
+  if(certification.length == 0) {
+    await Certification.create({
+      userId: req.user.id,
+      courseId: courseId,
+      courseName: course.title,
+      mark: 10
+    });
+    req.status(200).json(true);
+  } else {
+    res.status(401).json(false);
+  }
 })
 
 export {
   postCourse, getCourses, getCourseById, putCourseById, deleteCourseById, postRegisterCourse, getRegistedUsers, getRegisted, getWillLearns, getRequirements, getTrackByCourseId, getStepByCourseId
-  , getExamsCourse, getCertifications
+  , getExamsCourse, getCertifications, postCertify
 }

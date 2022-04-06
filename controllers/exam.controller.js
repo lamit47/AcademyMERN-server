@@ -3,6 +3,7 @@ import Exam from '../models/exam.model.js';
 import ExamQuestion from '../models/examquestion.model.js';
 import httpStatusCodes from '../utils/httpStatusCodes.js';
 import mongoose from 'mongoose';
+import ExamUser from '../models/examUser.model.js';
 
 
 // Create exam
@@ -15,7 +16,7 @@ const createExam = asyncHandler(async (req, res) => {
   if (!title) {
     return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Vui lòng nhập title' });
   }
-  if (!examDuration || typeof examDuration !== 'number') {
+  if (!examDuration) {
     return res.status(httpStatusCodes.BAD_REQUEST).json({ status: 'error', message: 'Vui lòng nhập đúng examDuration' });
   }
 
@@ -164,9 +165,22 @@ const getListQuestions = asyncHandler(async (req, res) => {
   }
 
   let objectId = mongoose.Types.ObjectId(id);
-  let data = await ExamQuestion.find({ 'examId': objectId }).select('-rightOption -options');
+  let data = await ExamQuestion.find({ "question.examId": id });
 
-  return res.status(httpStatusCodes.OK).json(data);
+  let newData = data.map(question => {
+    let dataFormat = question.toObject();
+    dataFormat.examId = dataFormat.question.examId;
+    dataFormat.content = dataFormat.question.content;
+
+    delete dataFormat.options;
+    delete dataFormat.question;
+    delete dataFormat.rightOption;
+    delete dataFormat.createdAt;
+    delete dataFormat.updatedAt;
+    return dataFormat;
+  })
+
+  return res.status(httpStatusCodes.OK).json(newData);
 });
 
 //Get question
@@ -206,7 +220,12 @@ const getExamQuestions = asyncHandler(async (req, res) => {
 const getFinished = asyncHandler(async (req, res) => {
   const examId = req.params.id;
 
+  const examUser = ExamUser.findOne({examId: examId});
 
+  if (!examUser) {
+    return res.status(httpStatusCodes.OK).json(true);
+  }
+  return res.status(httpStatusCodes.OK).json(false);
 })
 
 //POST anwser
@@ -218,7 +237,12 @@ const postAnwser = asyncHandler(async (req, res) => {
 //GET test
 const getResult = asyncHandler(async (req, res) => {
   //here
-  let examId = req.params.examId;
+  let examId = req.params.id;
+  let userId = req.user.id;
+
+  let examUser = ExamUser.find({userId: userId, examId: examId});
+
+  // ok
 
 })
 

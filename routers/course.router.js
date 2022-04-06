@@ -13,7 +13,8 @@ import {
     getTrackByCourseId,
     getStepByCourseId,
     getExamsCourse,
-    getCertifications
+    getCertifications,
+    postCertify
 } from '../controllers/course.controller.js';
 import { verifyToken } from '../middlewares/auth.middleware.js';
 
@@ -44,5 +45,7 @@ router.route('/:id/TrackSteps').get(verifyToken , getStepByCourseId);
 router.route('/:id/Exams').get(getExamsCourse);
 
 router.route('/certifications/:id').get(getCertifications);
+
+router.route('/:id/Certify').post(verifyToken, postCertify);
 
 export default router;

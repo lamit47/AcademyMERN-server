@@ -11,13 +11,17 @@ const certificationSchema = mongoose.Schema(
         type: ObjectId,
         required: true,
       },
+      courseName: {
+        type: String,
+        required: true,
+      },
       mark: {
         type: Number,
         required: true,
       }
     },
     {
-      timestamps: true,
+      
     }
 );
 

@@ -36,6 +36,7 @@ const blogSchema = mongoose.Schema(
     },
     {
       timestamps: true,
+      versionKey: false
     }
 );
 
@@ -49,6 +50,13 @@ blogSchema.virtual('id').get(function () {
 blogSchema.set('toJSON', {
   virtuals: true,
   versionKey:false,
+  transform: function (doc, ret) {
+    delete ret._id
+  }
+});
+
+blogSchema.set('toObject', {
+  virtuals: true,
   transform: function (doc, ret) {
     delete ret._id
   }

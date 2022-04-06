@@ -18,6 +18,7 @@ const blogCommentSchema = mongoose.Schema(
     },
     {
       timestamps: true,
+      versionKey: false
     }
 );
 
