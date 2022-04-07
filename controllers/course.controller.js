@@ -10,6 +10,7 @@ import Step from "../models/step.model.js";
 import Progress from "../models/progress.model.js";
 import Exam from "../models/exam.model.js";
 import Certification from "../models/certification.model.js";
+import ExamUser from "../models/examUser.model.js";
 
 // create a course
 const postCourse = asyncHandler(async (req, res) => {
@@ -250,7 +251,7 @@ const getCertifications = asyncHandler(async (req, res) => {
 
   let certifications = await Certification.find({userId: userId});
 
-  if (certifications.length == 0) {
+  if (!certifications) {
     res.status(httpStatusCodes.NOT_FOUND).json({message: "not found!"})
   } else {
     certifications = certifications.toObject();
@@ -264,24 +265,35 @@ const getCertifications = asyncHandler(async (req, res) => {
 //POST certify
 const postCertify = asyncHandler(async (req, res) => {
   const courseId = req.params.id;
+  const userId = req.user.id;
 
-  let certification = await Certification.findOne({courseId: courseId, userId: req.user.id});
-
-  let course = await Course.findById(courseId);
-
-  course = course.toObject();
-
-  if(certification.length == 0) {
-    await Certification.create({
-      userId: req.user.id,
-      courseId: courseId,
-      courseName: course.title,
-      mark: 10
-    });
-    req.status(200).json(true);
-  } else {
-    res.status(401).json(false);
+  let exams = await Exam.find({courseId: courseId, userId: userId, isDeleted: false});
+  if (!exams) {
+    res.status(httpStatusCodes.NOT_FOUND).json({message: "not found!"})
   }
+
+  let total = 0;
+  let i = 0;
+  for (const exam of exams) {
+    let examUsers = await ExamUser.find({examId: exam.id, userId: userId}).sort([['mark', -1]])
+    let examUser = examUsers[0];
+    console.log("asdasd",examUser)
+    if (examUser != null && examUser.mark >= 4) {
+      total += examUser.mark;
+      i += 1;
+    }
+  }
+  let mark = total / i;
+  if (mark >= 4) {
+    let certification = new Certification({
+      userId: userId,
+      courseId: courseId,
+      mark: mark
+    });
+    await certification.save();
+    res.status(200).json(true);
+  }
+  res.status(200).json(true); 
 })
 
 export {

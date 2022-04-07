@@ -15,10 +15,6 @@ const examUserSchema = mongoose.Schema(
         type: Number,
         required: true,
       },
-      CompletedAt: {
-        type: Date,
-        required: true,
-      },
       noOfRightOption: {
         type: Number,
         required: true,
@@ -30,29 +26,28 @@ const examUserSchema = mongoose.Schema(
       details: [{
         questionId: {
           type: ObjectId,
-          require: true
+          required: true
         },
         questionContent: {
           type: String,
-          require: true
+          required: true
         },
         optionId: {
           type: ObjectId,
-          require: true
+          required: true
         },
         optionContent: {
           type: String,
-          require: true
+          required: true
         },
         isRight: {
           type: Boolean,
-          require: true,
-          default: true
+          required: true,
+          default: false
         },
       }],
       title: {
-        type: String,
-        required: true,
+        type: String
       }
     },
     {

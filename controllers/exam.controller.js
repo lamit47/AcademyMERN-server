@@ -4,6 +4,7 @@ import ExamQuestion from '../models/examquestion.model.js';
 import httpStatusCodes from '../utils/httpStatusCodes.js';
 import mongoose from 'mongoose';
 import ExamUser from '../models/examUser.model.js';
+import ExamDetail from '../models/examdetail.model.js';
 
 
 // Create exam
@@ -201,7 +202,7 @@ const getQuestion = asyncHandler(async (req, res) => {
 const getExamQuestions = asyncHandler(async (req, res) => {
   let id = req.params.examId;
 
-  let examQuestions = await ExamQuestion.find({examId : id});
+  let examQuestions = await ExamQuestion.find({"question.examId": id});
 
   if (examQuestions) {
 
@@ -222,7 +223,7 @@ const getFinished = asyncHandler(async (req, res) => {
 
   const examUser = ExamUser.findOne({examId: examId});
 
-  if (!examUser) {
+  if (!examUser && examUser.mark >= 4) {
     return res.status(httpStatusCodes.OK).json(true);
   }
   return res.status(httpStatusCodes.OK).json(false);
@@ -230,21 +231,102 @@ const getFinished = asyncHandler(async (req, res) => {
 
 //POST anwser
 const postAnwser = asyncHandler(async (req, res) => {
-  const examUserId = req.params.examUserId;
+  const reqArr = req.body;
+  const examUserId = req.params.id;
+  const userId = req.user.id;
   
-})
+  let examUser = await ExamUser.findOne({_id: examUserId}); 
+
+  for (let i = 0; i < reqArr.length; i++) {
+    let n = new ExamDetail({
+      examUserId: examUserId,
+      questionId: reqArr[i].questionId,
+      optionId: reqArr[i].optionId
+    });
+    await n.save();
+  }
+
+  let rightOption = 0;
+  for (let i = 0; i < reqArr.length; i++) {
+    for (let j = 0; j < examUser.details.length; j++) {
+      if (examUser.details[j].questionId == reqArr[i].questionId && examUser.details[j].optionId == reqArr[i].optionId && examUser.details[j].isRight == true) {
+        rightOption = rightOption + 1;
+      }
+    }
+  }
+
+  examUser.noOfRightOption = rightOption;
+  examUser.mark = rightOption / examUser.noOfQuestion * 10;
+
+  examUser = await examUser.save();
+  return res.status(200).json(examUser);
+});
+
+//GET result
+const getResult = asyncHandler(async (req, res) =>{
+  const userExamId = req.params.id;
+
+  let examUser = await ExamUser.findById(userExamId);
+
+  res.status(200).json(handlerResExamUser(examUser));
+});
 
 //GET test
-const getResult = asyncHandler(async (req, res) => {
+const getTest = asyncHandler(async (req, res) => {
   //here
   let examId = req.params.id;
   let userId = req.user.id;
 
-  let examUser = ExamUser.find({userId: userId, examId: examId});
+  let examUser = await ExamUser.findOne({userId: userId, examId: examId});
+  if (!(!examUser)) {
+    return res.status(200).json(handlerResExamUser(examUser));
+  }
 
-  // ok
+  let detailsArr = [];
+  let questions = await ExamQuestion.find({"question.examId": examId});
+  
+  questions.forEach(question => {
+    question.options.forEach((option, index) => {
+      detailsArr.push({
+        questionId: question.id,
+        questionContent: question.question.content,
+        optionId: option._id,
+        optionContent: option.content,
+        isRight: index == question.rightOption.index ? true : false
+      })
+    })
+  })
+    
+  let newExamUser = new ExamUser({
+    examId: examId,
+    userId: userId,
+    noOfQuestion: await ExamQuestion.countDocuments({isDeleted: false, "question.examId": examId }),
+    noOfRightOption: 0,
+    mark: 0,
+    details: detailsArr,
+    title: ""
+  })
+  await newExamUser.save();
 
+  
+  
+  res.status(200).json(handlerResExamUser(newExamUser));  
 })
+
+const handlerResExamUser = (newExamUser) => {
+  newExamUser = newExamUser.toObject();
+  newExamUser.completedAt = newExamUser.updatedAt;
+  newExamUser.startedAt = newExamUser.createdAt;
+
+  delete newExamUser.createdAt;
+  delete newExamUser.updatedAt;
+
+  for (let i = 0; i < newExamUser.details.length; i++) {
+    delete newExamUser.details[i]._id;
+  }
+
+  return newExamUser;
+}
 
 const handlerRes = (resFormat) => {
   let examId = resFormat.question.examId;
@@ -292,7 +374,8 @@ export {
   getListQuestions,
   getQuestion,
   getExamQuestions,
-  getResult,
+  getTest,
   postAnwser,
-  getFinished
+  getFinished,
+  getResult
 };

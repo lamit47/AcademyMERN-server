@@ -6,28 +6,28 @@ const examQuestionSchema = mongoose.Schema(
     question: {
       examId: {
         type: ObjectId,
-        require: true
+        required: true
       },
       content: {
         type: String,
-        require: true
+        required: true
       },
     },
     options: [{
       content: {
         type: String,
-        require: true
+        required: true
       }
     }],
     rightOption: {
       index: {
         type: Number,
-        require: true
+        required: true
       }
     },
     isDeleted: {
       type: Boolean,
-      require: false,
+      required: false,
       default: false
     }
   },

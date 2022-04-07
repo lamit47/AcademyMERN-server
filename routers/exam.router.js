@@ -10,8 +10,10 @@ import {
   getListQuestions,
   getQuestion,
   getExamQuestions,
-  getResult,
-  getFinished
+  getTest,
+  getFinished,
+  postAnwser,
+  getResult
 } from '../controllers/exam.controller.js';
 import { verifyToken } from '../middlewares/auth.middleware.js';
 
@@ -37,8 +39,14 @@ router.route("/:examId/examquestions")
   .get(getExamQuestions);
 
 router.route("/:id/Test")
-  .get(verifyToken, getResult);
+  .get(verifyToken, getTest);
+
+router.route("/:id/result")
+  .get(getResult);
 
 router.route("/:id/isfinished").get(getFinished);
+
+router.route("/:id/answers")
+  .post(verifyToken, postAnwser);
 
 export default router;
