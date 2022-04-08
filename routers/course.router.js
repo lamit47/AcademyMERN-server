@@ -34,7 +34,7 @@ router.route('/:id/Register').post( verifyToken, postRegisterCourse);
 
 router.route('/:id/IsRegisted').get( verifyToken, getRegisted);
 
-router.route('/registedCourses/:userId').get( getRegistedUsers);
+router.route('/registedCourses/:id').get(getRegistedUsers);
 
 router.get('/:id/WillLearns', getWillLearns);
 router.get('/:id/Requirements', getRequirements);

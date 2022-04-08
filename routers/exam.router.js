@@ -44,7 +44,7 @@ router.route("/:id/Test")
 router.route("/:id/result")
   .get(getResult);
 
-router.route("/:id/isfinished").get(getFinished);
+router.route("/:id/isfinished").get(verifyToken, getFinished);
 
 router.route("/:id/answers")
   .post(verifyToken, postAnwser);

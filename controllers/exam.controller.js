@@ -220,10 +220,11 @@ const getExamQuestions = asyncHandler(async (req, res) => {
 //GET isFinished
 const getFinished = asyncHandler(async (req, res) => {
   const examId = req.params.id;
+  const userId = req.user.id;
 
-  const examUser = ExamUser.findOne({examId: examId});
+  const examUser = await ExamUser.findOne({examId: examId, userId: userId});
 
-  if (!examUser && examUser.mark >= 4) {
+  if (!!examUser && examUser.mark >= 4) {
     return res.status(httpStatusCodes.OK).json(true);
   }
   return res.status(httpStatusCodes.OK).json(false);

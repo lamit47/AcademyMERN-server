@@ -150,18 +150,20 @@ const getRegisted = asyncHandler(async (req, res) => {
 
 // get registed course
 const getRegistedUsers = asyncHandler(async (req, res) => {
-  let userId = req.params.userId;
+  let userId = req.params.id;
 
   const attendances = await Attendance.find({ userId: userId})
-  
-  let listCourses = await attendances.map(async attendance => {
-    return await Course.findById(attendance.courseId)
-  })
 
-  if (listCourses) {
-    res.status(200).json(listCourses)
-  } else {
+  let listCourses = [];
+  for (const course of attendances) {
+    let obj = await Course.findById({_id: course.courseId});
+    listCourses.push(obj);
+  }
+
+  if (!listCourses) {
     res.status(401).json({ status: 'error', message: 'not found' })
+  } else {
+    res.status(200).json(listCourses)
   }
 })
 
@@ -254,7 +256,6 @@ const getCertifications = asyncHandler(async (req, res) => {
   if (!certifications) {
     res.status(httpStatusCodes.NOT_FOUND).json({message: "not found!"})
   } else {
-    certifications = certifications.toObject();
     delete certifications.id;
 
     res.status(httpStatusCodes.OK).json(certifications);
@@ -277,7 +278,7 @@ const postCertify = asyncHandler(async (req, res) => {
   for (const exam of exams) {
     let examUsers = await ExamUser.find({examId: exam.id, userId: userId}).sort([['mark', -1]])
     let examUser = examUsers[0];
-    console.log("asdasd",examUser)
+    
     if (examUser != null && examUser.mark >= 4) {
       total += examUser.mark;
       i += 1;
