@@ -1,5 +1,5 @@
 import express from 'express';
-import { verifyToken } from '../middlewares/auth.middleware.js';
+import { verifyToken, hasRole } from '../middlewares/auth.middleware.js';
 import { 
   registerUser,
   getLoginUser,
@@ -26,7 +26,7 @@ router.route("/password").post(verifyToken, changePassword);
 router.route("/").get(getAllUsers);
 router.route("/roles").get(roles);
 router.route("/public/:id").get(publicUser);
-router.route("/:id").get(getUserById);
+router.route("/:id").get((req, res, next) => hasRole(req, res, next, 'Administrators'), getUserById);
 router.route("/:id").put(adminUpdateInfo);
 router.route("/:id/roles").get(userRoles);
 router.route("/:id/roles").post(setRoles);
