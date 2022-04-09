@@ -20,7 +20,11 @@ const getBlogs = asyncHandler(async (req, res) => {
   for (let item of list) {
     let blog = item.toObject();
     let picture = await Picture.findById(blog.pictureId);
-    blog.picturePath = hostname + picture.picturePath;
+    if (picture) {
+      blog.picturePath = hostname + picture.picturePath;
+    } else {
+      blog.picturePath = '/';
+    }
     blogs.push(blog);
   }
   return res.status(httpStatusCodes.OK).send(blogs);
