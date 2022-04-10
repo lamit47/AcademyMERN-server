@@ -22,20 +22,24 @@ const getBlogs = asyncHandler(async (req, res) => {
     let picture = await Picture.findById(blog.pictureId);
     if (picture) {
       blog.picturePath = hostname + picture.picturePath;
-    } else {
-      blog.picturePath = '/';
     }
     blogs.push(blog);
   }
-  return res.status(httpStatusCodes.OK).send(blogs);
+  return res.status(httpStatusCodes.OK).json(blogs);
 });
 
 //GetBlogbyID
 const getBlogById = asyncHandler(async (req, res) => {
+  const hostname = process.env.HOSTNAME;
   let blog = await Blog.findById(req.params.id);
-  console.log("1233")
+
   if (!blog) {
     return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'Không tìm thấy blog này' });
+  }
+  let picture = await Picture.findById(blog.pictureId);
+  if (picture) {
+    blog = blog.toObject();
+    blog.picturePath = hostname + picture.picturePath;
   }
   return res.status(httpStatusCodes.OK).json(blog);
 });
@@ -79,7 +83,7 @@ const updateBlog = asyncHandler(async (req, res) => {
   blog.content = content;
   blog.pictureId = pictureId;
   blog = await blog.save();
-  
+
   return res.status(httpStatusCodes.OK).json(blog);
 });
 
@@ -96,7 +100,7 @@ const getComments = asyncHandler(async (req, res) => {
     comment.user = user.toObject();
     listComments.push(comment);
   }
-  
+
   return res.status(httpStatusCodes.OK).json(listComments);
 });
 
