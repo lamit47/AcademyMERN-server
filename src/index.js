@@ -54,7 +54,7 @@ app.use('/api/blogComment', blogCommentRouter);
 
 app.use('/api/willLearn', willLearnRouter);
 
-app.use('/api/picture/upload' , pictureRouter);
+app.use('/api/picture' , pictureRouter);
 
 app.use('/api/course' , courseRouter);
 

@@ -1,7 +1,9 @@
 import Picture from "../models/picture.model.js";
+import User from "../models/user.model.js";
 import multer from "multer";
 import { v4 as uuidv4 } from 'uuid';
 import path from "path";
+import asyncHandler from "express-async-handler";
 import httpStatusCodes from "../utils/httpStatusCodes.js";
 
 const storage = multer.diskStorage({
@@ -49,14 +51,26 @@ const newPicture = (req, res, next) => {
     })
     .catch(err => {
       console.log(err);
-      res.status(500).json({
+      res.status(httpStatusCodes.BAD_REQUEST).json({
         error: err
       });
     });
 }
 
+const userProfilePic = asyncHandler(async (req, res) => {
+  let userId = req.user.id;
+  let path = req.file.path;
+  let user = await User.findById(userId);
+  if (!user) {
+    return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: "Không tìm thấy người dùng này" });
+  }
+  user.picture = path;
+  user.save();
+  return res.status(httpStatusCodes.OK).json({ status: 'success' });
+});
+
 export {
-  uploadPicture, newPicture  //include the new guy
+  uploadPicture, newPicture, userProfilePic
 };
 
 

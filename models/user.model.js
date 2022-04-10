@@ -55,7 +55,11 @@ userSchema.set('toJSON', {
   virtuals: true,
   versionKey:false,
   transform: function (doc, ret) {
-    delete ret._id
+    delete ret._id;
+    if (ret.picture && ret.picture !== "/") {
+      let hostname = process.env.HOSTNAME;
+      ret.picture = hostname + ret.picture;
+    }
   }
 });
 
@@ -64,7 +68,11 @@ userSchema.set('toObject', {
   virtuals: true,
   versionKey:false,
   transform: function (doc, ret) {
-    delete ret._id
+    delete ret.id;
+    if (ret.picture && ret.picture !== "/") {
+      let hostname = process.env.HOSTNAME;
+      ret.picture = hostname + ret.picture;
+    }
   }
 });
 
