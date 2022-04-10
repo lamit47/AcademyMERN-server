@@ -69,8 +69,20 @@ const userProfilePic = asyncHandler(async (req, res) => {
   return res.status(httpStatusCodes.OK).json({ status: 'success' });
 });
 
+const adminProfilePic = asyncHandler(async (req, res) => {
+  let userId = req.params.id;
+  let path = req.file.path;
+  let user = await User.findById(userId);
+  if (!user) {
+    return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: "Không tìm thấy người dùng này" });
+  }
+  user.picture = path;
+  user.save();
+  return res.status(httpStatusCodes.OK).json({ status: 'success' });
+});
+
 export {
-  uploadPicture, newPicture, userProfilePic
+  uploadPicture, newPicture, userProfilePic, adminProfilePic
 };
 
 
