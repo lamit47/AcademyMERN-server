@@ -121,13 +121,13 @@ const updateQuestion = asyncHandler(async (req, res) => {
     return res.status(httpStatusCodes.NOT_FOUND).json({ status: 'error', message: 'Không tìm câu hỏi này' });
   }
   
-  let { content, options, rightOption } = req.body;
+  let { question, options, rightOption } = req.body;
 
-  if (!content || !options || !rightOption) {
+  if (!question || !options || !rightOption) {
     return res.status(httpStatusCodes.BAD_REQUEST).json({status: false, message: 'Vui lòng nhập đầy đủ các fields'});
   }
 
-  examQuestion.content = content;
+  examQuestion.question = question;
   examQuestion.options = options;
   examQuestion.rightOption = rightOption;
   examQuestion = await examQuestion.save();
